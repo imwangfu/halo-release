@@ -5,882 +5,1135 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Halo - AI that works for you</title>
   <meta name="description" content="Put Claude Code in your pocket. Same Agent capabilities, better UI, plus remote control from any device.">
-  <meta name="keywords" content="AI Assistant, Claude Code, Agent, Remote Control, Desktop App">
 
-  <meta property="og:title" content="Halo - AI that works for you">
-  <meta property="og:description" content="Put Claude Code in your pocket. Control your computer from anywhere.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://imwangfu.github.io/halo-release">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='%233b82f6' stroke-width='8'/></svg>">
 
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='%2310b981' stroke-width='8'/></svg>">
-
-  <!-- Inter Font -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --bg-primary: #000000;
-      --bg-secondary: #0a0a0a;
-      --bg-tertiary: #111111;
-      --bg-card: #161616;
-      --bg-card-hover: #1a1a1a;
-      --text-primary: #ffffff;
-      --text-secondary: #888888;
-      --text-muted: #555555;
-      --accent: #10b981;
-      --accent-hover: #34d399;
-      --accent-glow: rgba(16, 185, 129, 0.4);
-      --accent-dim: rgba(16, 185, 129, 0.1);
-      --border: #222222;
-      --border-light: #333333;
-      --gradient-start: #10b981;
-      --gradient-end: #059669;
-    }
-
-    * {
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+    :root {
+      --bg: #050505;
+      --bg-subtle: #0c0c0c;
+      --bg-muted: #141414;
+      --bg-elevated: #1a1a1a;
+      --border: #262626;
+      --border-subtle: #1f1f1f;
+      --text: #fafafa;
+      --text-secondary: #a3a3a3;
+      --text-muted: #737373;
+      --accent: #3b82f6;
+      --accent-light: #60a5fa;
+      --accent-dark: #2563eb;
+      --accent-bg: rgba(59, 130, 246, 0.08);
+      --accent-border: rgba(59, 130, 246, 0.2);
+      --warning: #fbbf24;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
     html {
       scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       line-height: 1.6;
-      min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* Preview Banner */
-    .preview-banner {
-      background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
-      color: #000;
-      text-align: center;
-      padding: 0.625rem 1rem;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
+    /* Scroll Animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
     }
 
-    /* Language Switcher */
-    .lang-switcher {
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fade-in-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .fade-in-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .fade-in-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .fade-in-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .scale-in {
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+
+    .scale-in.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Stagger delays */
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+    .delay-5 { transition-delay: 0.5s; }
+
+    /* Nav */
+    .nav {
       position: fixed;
-      top: 52px;
-      right: 24px;
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 100;
+      padding: 16px 24px;
       display: flex;
-      gap: 0;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(5, 5, 5, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      transform: translateY(-100%);
+      animation: slideDown 0.5s ease-out 0.2s forwards;
+    }
+
+    @keyframes slideDown {
+      to { transform: translateY(0); }
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      animation: logoSpin 20s linear infinite;
+    }
+
+    @keyframes logoSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .lang-btn {
-      padding: 0.5rem 0.875rem;
-      font-size: 0.75rem;
+      padding: 6px 12px;
+      font-size: 12px;
       font-weight: 500;
-      color: var(--text-secondary);
+      color: var(--text-muted);
       background: transparent;
-      border: none;
+      border: 1px solid transparent;
+      border-radius: 6px;
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .lang-btn:hover {
-      color: var(--text-primary);
-      background: var(--bg-card-hover);
+      color: var(--text-secondary);
     }
 
     .lang-btn.active {
       color: var(--accent);
-      background: var(--accent-dim);
+      background: var(--accent-bg);
+      border-color: var(--accent-border);
     }
 
-    /* Hero Section */
+    /* Hero */
     .hero {
-      min-height: calc(100vh - 36px);
+      min-height: 100vh;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      text-align: center;
-      padding: 4rem 2rem;
+      justify-content: center;
+      padding: 100px 24px 80px;
       position: relative;
-      overflow: hidden;
     }
 
-    /* Gradient orbs */
-    .hero::before {
-      content: '';
+    .hero-bg {
       position: absolute;
-      top: -20%;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 1000px;
-      height: 1000px;
-      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 50%);
-      pointer-events: none;
-      opacity: 0.6;
+      width: 100%;
+      max-width: 1200px;
+      height: 600px;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 100%);
+      animation: glowPulse 4s ease-in-out infinite;
     }
 
-    .hero::after {
-      content: '';
+    @keyframes glowPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .hero-grid {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black, transparent);
+    }
+
+    /* Floating particles */
+    .particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float 15s infinite ease-in-out;
+    }
+
+    .particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; animation-duration: 12s; }
+    .particle:nth-child(2) { left: 20%; top: 80%; animation-delay: 2s; animation-duration: 18s; }
+    .particle:nth-child(3) { left: 80%; top: 30%; animation-delay: 4s; animation-duration: 14s; }
+    .particle:nth-child(4) { left: 70%; top: 70%; animation-delay: 1s; animation-duration: 16s; }
+    .particle:nth-child(5) { left: 90%; top: 50%; animation-delay: 3s; animation-duration: 20s; }
+    .particle:nth-child(6) { left: 5%; top: 60%; animation-delay: 5s; animation-duration: 13s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+      25% { transform: translateY(-30px) translateX(10px); opacity: 0.6; }
+      50% { transform: translateY(-10px) translateX(-10px); opacity: 0.3; }
+      75% { transform: translateY(-40px) translateX(5px); opacity: 0.5; }
     }
 
     .hero-content {
       position: relative;
-      z-index: 1;
-      max-width: 900px;
+      text-align: center;
+      max-width: 800px;
     }
 
-    /* Logo */
-    .logo-container {
-      margin-bottom: 2rem;
-      position: relative;
-      display: inline-block;
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent-light);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeInUp 0.6s ease-out 0.3s forwards;
     }
 
-    .logo {
-      width: 88px;
-      height: 88px;
-      border: 3px solid var(--accent);
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
       border-radius: 50%;
-      position: relative;
-      animation: logo-pulse 4s ease-in-out infinite;
+      animation: pulse 2s infinite;
     }
 
-    .logo::before {
-      content: '';
-      position: absolute;
-      inset: -8px;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      border-radius: 50%;
-      animation: logo-ring 4s ease-in-out infinite;
-    }
-
-    @keyframes logo-pulse {
-      0%, 100% {
-        box-shadow: 0 0 30px var(--accent-glow), inset 0 0 20px rgba(16, 185, 129, 0.1);
-      }
-      50% {
-        box-shadow: 0 0 50px var(--accent-glow), inset 0 0 30px rgba(16, 185, 129, 0.15);
-      }
-    }
-
-    @keyframes logo-ring {
-      0%, 100% { transform: scale(1); opacity: 0.5; }
-      50% { transform: scale(1.1); opacity: 0.8; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
     }
 
     .hero h1 {
-      font-size: 4.5rem;
+      font-size: clamp(48px, 8vw, 80px);
       font-weight: 800;
-      margin-bottom: 0.75rem;
       letter-spacing: -0.04em;
-      background: linear-gradient(135deg, #fff 0%, #888 100%);
+      line-height: 1.05;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.5s forwards;
+    }
+
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 50%, var(--accent-dark) 100%);
+      background-size: 200% 200%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      animation: gradientShift 3s ease infinite;
     }
 
-    .hero .tagline {
-      font-size: 1.5rem;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
 
-    .hero .subtitle {
-      font-size: 1.125rem;
+    .hero-desc {
+      font-size: 18px;
       color: var(--text-secondary);
-      margin-bottom: 0.75rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.7s forwards;
     }
 
-    .hero .description {
-      font-size: 1rem;
-      color: var(--text-muted);
-      margin-bottom: 3rem;
-      max-width: 540px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .hero .description strong {
-      color: var(--text-primary);
+    .hero-desc strong {
+      color: var(--text);
       font-weight: 500;
     }
 
-    /* Download Section */
-    .download-section {
+    /* Buttons */
+    .btn-group {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .download-buttons {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
+      gap: 12px;
       justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.9s forwards;
     }
 
-    .download-btn {
+    .btn {
       display: inline-flex;
       align-items: center;
-      gap: 0.625rem;
-      padding: 0.875rem 1.75rem;
-      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-      color: #000;
-      text-decoration: none;
-      border-radius: 12px;
+      gap: 8px;
+      padding: 14px 28px;
+      font-size: 15px;
       font-weight: 600;
-      font-size: 0.9375rem;
+      text-decoration: none;
+      border-radius: var(--radius-sm);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+      cursor: pointer;
+      border: none;
+      position: relative;
+      overflow: hidden;
     }
 
-    .download-btn:hover {
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.5s;
+    }
+
+    .btn:hover::before {
+      transform: translateX(100%);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3), 0 4px 16px rgba(59, 130, 246, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-light);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4), 0 8px 32px rgba(59, 130, 246, 0.4);
       transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
     }
 
-    .download-btn svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    .download-btn.secondary {
-      background: var(--bg-card);
-      color: var(--text-primary);
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--text);
       border: 1px solid var(--border);
-      box-shadow: none;
     }
 
-    .download-btn.secondary:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--accent);
-      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
+    .btn-secondary:hover {
+      background: var(--bg-muted);
+      border-color: var(--accent-border);
+      transform: translateY(-2px);
     }
 
-    .version-info {
-      font-size: 0.8125rem;
+    .btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .version-text {
+      font-size: 13px;
       color: var(--text-muted);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.375rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 1.1s forwards;
     }
 
-    .version-info a {
+    .version-text a {
       color: var(--text-secondary);
       text-decoration: none;
       transition: color 0.2s;
     }
 
-    .version-info a:hover {
+    .version-text a:hover {
       color: var(--accent);
     }
 
-    /* Section Common */
-    section {
-      position: relative;
+    /* Features */
+    .features {
+      padding: 120px 24px;
+      background: var(--bg-subtle);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
     }
 
-    section::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
-    }
-
-    .section-container {
+    .container {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 0 2rem;
     }
 
     .section-header {
       text-align: center;
-      margin-bottom: 4rem;
+      margin-bottom: 64px;
     }
 
-    .section-label {
+    .section-tag {
       display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--accent);
-      text-transform: uppercase;
+      font-size: 11px;
+      font-weight: 700;
       letter-spacing: 0.1em;
-      margin-bottom: 1rem;
-      padding: 0.375rem 0.875rem;
-      background: var(--accent-dim);
-      border-radius: 100px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
     }
 
     .section-title {
-      font-size: 2.5rem;
+      font-size: clamp(32px, 5vw, 44px);
       font-weight: 700;
       letter-spacing: -0.03em;
-      margin-bottom: 1rem;
+      margin-bottom: 16px;
     }
 
-    .section-subtitle {
-      font-size: 1.0625rem;
+    .section-desc {
+      font-size: 17px;
       color: var(--text-secondary);
-      max-width: 600px;
+      max-width: 500px;
       margin: 0 auto;
     }
 
-    /* Comparison Section */
-    .comparison-section {
-      padding: 6rem 0;
-      background: var(--bg-secondary);
-    }
-
-    .comparison-grid {
+    /* Comparison Cards */
+    .comparison {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem;
-      max-width: 900px;
-      margin: 0 auto;
+      gap: 24px;
     }
 
-    .comparison-card {
-      background: var(--bg-card);
+    .card {
+      background: var(--bg-muted);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      transition: all 0.3s;
+      border-radius: var(--radius);
+      padding: 32px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .comparison-card:hover {
-      border-color: var(--border-light);
-      transform: translateY(-2px);
+    .card:hover {
+      border-color: var(--border);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
     }
 
-    .comparison-card.highlight {
+    .card.featured {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, var(--bg-muted) 100%);
+      border-color: var(--accent-border);
+    }
+
+    .card.featured:hover {
       border-color: var(--accent);
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%);
+      box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
     }
 
-    .comparison-card .card-header {
+    .card-header {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
+      gap: 14px;
+      margin-bottom: 28px;
     }
 
-    .comparison-card .card-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--bg-tertiary);
-      border-radius: 10px;
+    .card-icon {
+      width: 48px;
+      height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.25rem;
+      background: var(--bg-elevated);
+      border-radius: 12px;
+      font-size: 22px;
+      transition: transform 0.3s;
     }
 
-    .comparison-card.highlight .card-icon {
-      background: var(--accent-dim);
+    .card:hover .card-icon {
+      transform: scale(1.1) rotate(5deg);
     }
 
-    .comparison-card .card-title {
-      font-size: 1.25rem;
+    .card.featured .card-icon {
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+    }
+
+    .card-name {
+      font-size: 20px;
       font-weight: 600;
     }
 
-    .comparison-card .card-badge {
-      font-size: 0.6875rem;
-      font-weight: 600;
-      color: var(--accent);
-      background: var(--accent-dim);
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
+    .card-tag {
       margin-left: auto;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      background: var(--accent-bg);
+      border-radius: 4px;
+      animation: tagPulse 2s ease-in-out infinite;
     }
 
-    .feature-list {
+    @keyframes tagPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); }
+    }
+
+    .card-list {
       list-style: none;
     }
 
-    .feature-list li {
+    .card-list li {
       display: flex;
       align-items: flex-start;
-      gap: 0.75rem;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.9375rem;
+      gap: 12px;
+      padding: 14px 0;
+      font-size: 15px;
       color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: transform 0.2s, padding-left 0.2s;
     }
 
-    .feature-list li:last-child {
+    .card-list li:hover {
+      transform: translateX(4px);
+      padding-left: 4px;
+    }
+
+    .card-list li:last-child {
       border-bottom: none;
     }
 
-    .feature-list .icon {
-      width: 20px;
-      height: 20px;
+    .card-list .icon {
+      width: 18px;
+      height: 18px;
       flex-shrink: 0;
       margin-top: 2px;
+      transition: transform 0.2s;
     }
 
-    .feature-list .check {
-      color: var(--accent);
+    .card-list li:hover .icon {
+      transform: scale(1.2);
     }
 
-    .feature-list .cross {
-      color: var(--text-muted);
-    }
+    .card-list .check { color: var(--accent); }
+    .card-list .cross { color: var(--text-muted); }
 
-    .feature-list .feature-highlight {
-      color: var(--text-primary);
+    .card-list .highlight {
+      color: var(--text);
       font-weight: 500;
     }
 
-    /* Remote Feature */
-    .remote-section {
-      padding: 6rem 0;
-      background: var(--bg-primary);
+    /* Remote Section */
+    .remote {
+      padding: 120px 24px;
+      background: var(--bg);
     }
 
-    .remote-grid {
+    .remote-scenarios {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
-      margin-bottom: 3rem;
+      gap: 20px;
+      margin-bottom: 48px;
     }
 
-    .scenario-card {
-      background: var(--bg-card);
+    .scenario {
+      background: var(--bg-muted);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.75rem;
-      transition: all 0.3s;
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
     }
 
-    .scenario-card::before {
+    .scenario::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, var(--accent), transparent);
+      background: linear-gradient(90deg, var(--accent), var(--accent-light), var(--accent));
+      background-size: 200% 100%;
       opacity: 0;
       transition: opacity 0.3s;
+      animation: shimmer 2s linear infinite;
     }
 
-    .scenario-card:hover {
-      border-color: var(--border-light);
-      transform: translateY(-4px);
+    @keyframes shimmer {
+      from { background-position: -200% 0; }
+      to { background-position: 200% 0; }
     }
 
-    .scenario-card:hover::before {
+    .scenario:hover {
+      transform: translateY(-10px);
+      border-color: var(--accent-border);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .scenario:hover::before {
       opacity: 1;
     }
 
-    .scenario-card .emoji {
-      font-size: 2rem;
-      margin-bottom: 1rem;
+    .scenario-emoji {
+      font-size: 32px;
+      margin-bottom: 16px;
+      display: inline-block;
+      transition: transform 0.3s;
     }
 
-    .scenario-card h3 {
-      font-size: 1.0625rem;
+    .scenario:hover .scenario-emoji {
+      transform: scale(1.2) rotate(-5deg);
+    }
+
+    .scenario h3 {
+      font-size: 17px;
       font-weight: 600;
-      margin-bottom: 0.5rem;
+      margin-bottom: 8px;
     }
 
-    .scenario-card p {
-      font-size: 0.875rem;
+    .scenario p {
+      font-size: 14px;
       color: var(--text-secondary);
       line-height: 1.6;
     }
 
     /* Steps */
-    .steps-container {
-      background: var(--bg-card);
+    .steps-box {
+      background: var(--bg-muted);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 2.5rem;
+      border-radius: var(--radius);
+      padding: 40px;
     }
 
     .steps-title {
-      font-size: 1rem;
+      font-size: 15px;
       font-weight: 600;
-      margin-bottom: 2rem;
+      margin-bottom: 32px;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 12px;
     }
 
     .steps-title::before {
       content: '';
       width: 4px;
-      height: 20px;
+      height: 18px;
       background: var(--accent);
       border-radius: 2px;
     }
 
-    .steps {
+    .steps-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 2rem;
+      gap: 24px;
     }
 
     .step {
       text-align: center;
+      position: relative;
     }
 
-    .step-number {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-      color: #000;
-      border-radius: 14px;
+    .step::after {
+      content: '';
+      position: absolute;
+      top: 26px;
+      left: 75%;
+      width: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-border), transparent);
+    }
+
+    .step:last-child::after {
+      display: none;
+    }
+
+    .step-num {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 16px;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: var(--accent);
+      color: #fff;
+      font-size: 18px;
       font-weight: 700;
-      font-size: 1.125rem;
-      margin: 0 auto 1rem;
+      border-radius: 14px;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .step:hover .step-num {
+      transform: scale(1.1);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
     }
 
     .step h4 {
-      font-size: 0.9375rem;
+      font-size: 15px;
       font-weight: 600;
-      margin-bottom: 0.375rem;
+      margin-bottom: 6px;
     }
 
     .step p {
-      font-size: 0.8125rem;
+      font-size: 13px;
       color: var(--text-muted);
     }
 
     /* Quick Start */
-    .quickstart-section {
-      padding: 6rem 0;
-      background: var(--bg-secondary);
+    .quickstart {
+      padding: 120px 24px;
+      background: var(--bg-subtle);
+      border-top: 1px solid var(--border-subtle);
     }
 
-    .quickstart-steps {
+    .qs-steps {
+      max-width: 500px;
+      margin: 0 auto 40px;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      max-width: 480px;
-      margin: 0 auto 2rem;
+      gap: 12px;
     }
 
-    .quick-step {
+    .qs-step {
       display: flex;
       align-items: center;
-      gap: 1.25rem;
-      background: var(--bg-card);
-      padding: 1.25rem 1.5rem;
-      border-radius: 14px;
+      gap: 20px;
+      padding: 20px 24px;
+      background: var(--bg-muted);
       border: 1px solid var(--border);
-      transition: all 0.3s;
-    }
-
-    .quick-step:hover {
-      border-color: var(--border-light);
-      transform: translateX(4px);
-    }
-
-    .quick-step .number {
-      width: 36px;
-      height: 36px;
-      background: var(--accent-dim);
-      color: var(--accent);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.9375rem;
-      flex-shrink: 0;
-    }
-
-    .quick-step .text {
-      font-size: 0.9375rem;
-    }
-
-    .quick-step .text span {
-      color: var(--text-muted);
-    }
-
-    .no-tech {
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.875rem;
-      line-height: 1.8;
-    }
-
-    .no-tech strong {
-      color: var(--text-primary);
-      font-weight: 500;
-    }
-
-    /* CTA */
-    .cta-section {
-      padding: 6rem 0;
-      text-align: center;
-      background: var(--bg-primary);
+      border-radius: var(--radius-sm);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
     }
 
-    .cta-section::before {
+    .qs-step::before {
       content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--accent);
+      transform: scaleY(0);
+      transition: transform 0.3s;
+    }
+
+    .qs-step:hover {
+      transform: translateX(10px);
+      border-color: var(--accent-border);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .qs-step:hover::before {
+      transform: scaleY(1);
+    }
+
+    .qs-num {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-bg);
+      color: var(--accent);
+      font-weight: 700;
+      border-radius: 10px;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .qs-step:hover .qs-num {
+      background: var(--accent);
+      color: #fff;
+      transform: rotate(360deg);
+    }
+
+    .qs-text {
+      font-size: 15px;
+    }
+
+    .qs-text span {
+      color: var(--text-muted);
+    }
+
+    .qs-note {
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    .qs-note strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* Notice */
+    .notice {
+      max-width: 500px;
+      margin: 40px auto 0;
+      padding: 16px 20px;
+      background: rgba(251, 191, 36, 0.08);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .notice:hover {
+      background: rgba(251, 191, 36, 0.12);
+      border-color: rgba(251, 191, 36, 0.3);
+    }
+
+    .notice p {
+      font-size: 13px;
+      color: #fbbf24;
+    }
+
+    .notice a {
+      color: #fbbf24;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+
+    .notice a:hover {
+      color: #fcd34d;
+    }
+
+    /* CTA */
+    .cta {
+      padding: 120px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-bg {
       position: absolute;
       bottom: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 800px;
+      width: 100%;
+      max-width: 1000px;
       height: 400px;
-      background: radial-gradient(ellipse, var(--accent-dim) 0%, transparent 60%);
+      background: radial-gradient(ellipse 60% 100% at 50% 100%, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
       pointer-events: none;
+      animation: ctaGlow 4s ease-in-out infinite;
     }
 
-    .cta-section::after {
-      display: none;
+    @keyframes ctaGlow {
+      0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+      50% { opacity: 0.7; transform: translateX(-50%) scale(1.05); }
     }
 
     .cta-content {
       position: relative;
-      z-index: 1;
     }
 
     .cta-quote {
-      font-size: 2rem;
+      font-size: clamp(28px, 4vw, 40px);
       font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 2.5rem;
-      background: linear-gradient(135deg, var(--accent) 0%, #fff 50%, var(--accent) 100%);
+      letter-spacing: -0.03em;
+      margin-bottom: 40px;
+      background: linear-gradient(135deg, var(--accent-light), var(--text), var(--accent-light));
+      background-size: 200% 200%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      animation: gradient 6s ease infinite;
+    }
+
+    @keyframes gradient {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
 
     /* Footer */
     footer {
-      padding: 2rem;
+      padding: 32px 24px;
       text-align: center;
-      background: var(--bg-secondary);
-      border-top: 1px solid var(--border);
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-subtle);
     }
 
     footer p {
+      font-size: 13px;
       color: var(--text-muted);
-      font-size: 0.8125rem;
     }
 
     footer a {
       color: var(--text-secondary);
       text-decoration: none;
-      margin: 0 0.625rem;
+      margin: 0 8px;
       transition: color 0.2s;
+      position: relative;
+    }
+
+    footer a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.3s;
     }
 
     footer a:hover {
       color: var(--accent);
     }
 
+    footer a:hover::after {
+      width: 100%;
+    }
+
     /* Responsive */
     @media (max-width: 900px) {
-      .comparison-grid {
+      .comparison {
         grid-template-columns: 1fr;
       }
 
-      .remote-grid {
+      .remote-scenarios {
         grid-template-columns: 1fr;
       }
 
-      .steps {
+      .steps-grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+
+      .step::after {
+        display: none;
       }
     }
 
     @media (max-width: 640px) {
-      .hero h1 {
-        font-size: 3rem;
+      .nav {
+        padding: 12px 16px;
       }
 
-      .hero .tagline {
-        font-size: 1.25rem;
+      .hero {
+        padding: 100px 20px 60px;
       }
 
-      .section-title {
-        font-size: 1.75rem;
-      }
-
-      .download-buttons {
+      .btn-group {
         flex-direction: column;
-        width: 100%;
-        max-width: 300px;
+        align-items: stretch;
+        max-width: 280px;
+        margin-left: auto;
+        margin-right: auto;
       }
 
-      .download-btn {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .steps {
+      .steps-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 20px;
       }
 
-      .lang-switcher {
-        top: 44px;
-        right: 12px;
+      .steps-box {
+        padding: 28px;
+      }
+
+      .card {
+        padding: 24px;
+      }
+    }
+
+    /* Reduce motion for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Preview Banner -->
-  <div class="preview-banner" data-i18n="banner">
-    🚧 Developer Preview · May contain bugs, feedback welcome
-  </div>
+  <!-- Nav -->
+  <nav class="nav">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon"></div>
+      Halo
+    </a>
+    <div class="nav-right">
+      <button class="lang-btn" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="zh">中文</button>
+    </div>
+  </nav>
 
-  <!-- Language Switcher -->
-  <div class="lang-switcher">
-    <button class="lang-btn" data-lang="en">EN</button>
-    <button class="lang-btn" data-lang="zh">中文</button>
-  </div>
-
-  <!-- Hero Section -->
+  <!-- Hero -->
   <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-glow"></div>
+      <div class="hero-grid"></div>
+      <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+      </div>
+    </div>
     <div class="hero-content">
-      <div class="logo-container">
-        <div class="logo"></div>
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        <span data-i18n="badge">Now in Developer Preview</span>
       </div>
 
-      <h1>Halo</h1>
-      <p class="tagline" data-i18n="tagline">AI that works, anywhere</p>
-      <p class="subtitle" data-i18n="subtitle">
-        If you use Claude Code, you'll love Halo.
-      </p>
-      <p class="description" data-i18n="description">
-        Same Agent capabilities, better UI, plus something Claude Code can't do:<br>
-        <strong data-i18n="description-highlight">Control your computer from phone, iPad, or any browser</strong> — using natural language.
+      <h1>
+        <span data-i18n="hero-line1">AI that works</span><br>
+        <span class="gradient" data-i18n="hero-line2">anywhere you go</span>
+      </h1>
+
+      <p class="hero-desc" data-i18n="hero-desc">
+        If you use Claude Code, you'll love Halo. Same Agent, better interface, plus <strong data-i18n="hero-highlight">remote control from any device</strong>.
       </p>
 
-      <div class="download-section">
-        <div class="download-buttons">
-          <a href="#" class="download-btn" id="mac-arm64-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-            <span data-i18n="download-mac-arm">macOS (Apple Silicon)</span>
-          </a>
-          <a href="#" class="download-btn secondary" id="mac-x64-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-            <span data-i18n="download-mac-intel">macOS (Intel)</span>
-          </a>
-          <a href="#" class="download-btn secondary" id="win-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.75l6-1.32v6.48L3 12m17-9v8.75l-10 .15V5.21L20 3M3 13l6 .09v6.81l-6-1.15V13m17 .25V22l-10-1.91V13.1l10 .15z"/></svg>
-            <span data-i18n="download-win">Windows</span>
-          </a>
-        </div>
-        <div class="version-info">
-          <div>
-            <span id="current-version">v1.0.0</span> ·
-            <a href="https://github.com/imwangfu/halo-release/releases" target="_blank" data-i18n="all-versions">All versions</a>
-          </div>
-          <div id="build-time"></div>
-        </div>
+      <div class="btn-group">
+        <a href="#" class="btn btn-primary" id="mac-arm64-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <span data-i18n="dl-mac">macOS (Apple Silicon)</span>
+        </a>
+        <a href="#" class="btn btn-secondary" id="mac-x64-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <span data-i18n="dl-intel">macOS (Intel)</span>
+        </a>
+        <a href="#" class="btn btn-secondary" id="win-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.75l6-1.32v6.48L3 12m17-9v8.75l-10 .15V5.21L20 3M3 13l6 .09v6.81l-6-1.15V13m17 .25V22l-10-1.91V13.1l10 .15z"/></svg>
+          <span data-i18n="dl-win">Windows</span>
+        </a>
       </div>
+
+      <p class="version-text">
+        <span id="version">v1.0.0</span> · <span id="build-time"></span> · <a href="https://github.com/imwangfu/halo-release/releases" target="_blank" data-i18n="all-releases">All releases</a>
+      </p>
     </div>
   </section>
 
-  <!-- Comparison Section -->
-  <section class="comparison-section">
-    <div class="section-container">
-      <div class="section-header">
-        <span class="section-label" data-i18n="compare-label">COMPARISON</span>
-        <h2 class="section-title" data-i18n="compare-title">Switch from Claude Code</h2>
-        <p class="section-subtitle" data-i18n="compare-subtitle">Same underlying capabilities, no changes to your workflow needed</p>
+  <!-- Features -->
+  <section class="features">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag" data-i18n="compare-tag">Comparison</div>
+        <h2 class="section-title" data-i18n="compare-title">Why switch from Claude Code?</h2>
+        <p class="section-desc" data-i18n="compare-desc">Same underlying engine. No learning curve.</p>
       </div>
 
-      <div class="comparison-grid">
-        <div class="comparison-card">
+      <div class="comparison">
+        <div class="card fade-in-left delay-1">
           <div class="card-header">
             <div class="card-icon">⌨️</div>
-            <div class="card-title">Claude Code</div>
+            <div class="card-name">Claude Code</div>
           </div>
-          <ul class="feature-list">
+          <ul class="card-list">
             <li>
-              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              <span data-i18n="feature-agent">Full Agent capabilities</span>
+              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              <span data-i18n="cc-1">Full Agent capabilities</span>
             </li>
             <li>
-              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              <span data-i18n="feature-cli">Terminal CLI interface</span>
+              <svg class="icon cross" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/></svg>
+              <span data-i18n="cc-2">Terminal only, no GUI</span>
             </li>
             <li>
-              <svg class="icon cross" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-              <span data-i18n="feature-no-gui">No visual interface</span>
+              <svg class="icon cross" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/></svg>
+              <span data-i18n="cc-3">No remote access</span>
             </li>
             <li>
-              <svg class="icon cross" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-              <span data-i18n="feature-no-remote">No remote access</span>
-            </li>
-            <li>
-              <svg class="icon cross" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-              <span data-i18n="feature-need-node">Requires Node.js, npm, terminal</span>
+              <svg class="icon cross" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/></svg>
+              <span data-i18n="cc-4">Requires Node.js & npm</span>
             </li>
           </ul>
         </div>
 
-        <div class="comparison-card highlight">
+        <div class="card featured fade-in-right delay-2">
           <div class="card-header">
             <div class="card-icon">○</div>
-            <div class="card-title">Halo</div>
-            <span class="card-badge" data-i18n="recommended">RECOMMENDED</span>
+            <div class="card-name">Halo</div>
+            <span class="card-tag" data-i18n="recommended">RECOMMENDED</span>
           </div>
-          <ul class="feature-list">
+          <ul class="card-list">
             <li>
-              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              <span data-i18n="halo-agent">Full Agent (same underlying engine)</span>
+              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              <span data-i18n="halo-1">Same Agent, same engine</span>
             </li>
             <li>
-              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              <span data-i18n="halo-gui">Visual GUI with card-based status</span>
+              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              <span data-i18n="halo-2">Beautiful visual interface</span>
             </li>
             <li>
-              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              <span data-i18n="halo-artifacts">Built-in artifact panel</span>
+              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              <span class="highlight" data-i18n="halo-3">Remote from any device</span>
             </li>
             <li>
-              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              <span class="feature-highlight" data-i18n="halo-remote">Remote access from any device</span>
-            </li>
-            <li>
-              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              <span data-i18n="halo-install">One-click install, ready to use</span>
+              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              <span data-i18n="halo-4">One-click install</span>
             </li>
           </ul>
         </div>
@@ -888,55 +1141,55 @@
     </div>
   </section>
 
-  <!-- Remote Feature -->
-  <section class="remote-section">
-    <div class="section-container">
-      <div class="section-header">
-        <span class="section-label" data-i18n="remote-label">KILLER FEATURE</span>
+  <!-- Remote -->
+  <section class="remote">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag" data-i18n="remote-tag">Killer Feature</div>
         <h2 class="section-title" data-i18n="remote-title">Remote Control</h2>
-        <p class="section-subtitle" data-i18n="remote-subtitle">Your computer becomes a 24/7 AI workstation. All you need is a browser.</p>
+        <p class="section-desc" data-i18n="remote-desc">Your computer becomes a 24/7 AI workstation. All you need is a browser.</p>
       </div>
 
-      <div class="remote-grid">
-        <div class="scenario-card">
-          <div class="emoji">🚄</div>
-          <h3 data-i18n="scenario-train-title">On the Train</h3>
-          <p data-i18n="scenario-train-desc">Pull out your phone and have your office computer run a data analysis script</p>
+      <div class="remote-scenarios">
+        <div class="scenario scale-in delay-1">
+          <div class="scenario-emoji">🚄</div>
+          <h3 data-i18n="s1-title">On the train</h3>
+          <p data-i18n="s1-desc">Pull out your phone and run data analysis on your office computer</p>
         </div>
-        <div class="scenario-card">
-          <div class="emoji">🏢</div>
-          <h3 data-i18n="scenario-meeting-title">In a Meeting</h3>
-          <p data-i18n="scenario-meeting-desc">Use your iPad to have your workstation fix a few lines of code and create a PR</p>
+        <div class="scenario scale-in delay-2">
+          <div class="scenario-emoji">🏢</div>
+          <h3 data-i18n="s2-title">In a meeting</h3>
+          <p data-i18n="s2-desc">Use your iPad to fix code and create a PR on your workstation</p>
         </div>
-        <div class="scenario-card">
-          <div class="emoji">🏠</div>
-          <h3 data-i18n="scenario-home-title">At Home</h3>
-          <p data-i18n="scenario-home-desc">Connect to your work computer and let AI handle leftover tasks</p>
+        <div class="scenario scale-in delay-3">
+          <div class="scenario-emoji">🏠</div>
+          <h3 data-i18n="s3-title">At home</h3>
+          <p data-i18n="s3-desc">Connect to your work computer and let AI handle leftover tasks</p>
         </div>
       </div>
 
-      <div class="steps-container">
-        <div class="steps-title" data-i18n="how-it-works">How it works</div>
-        <div class="steps">
+      <div class="steps-box fade-in">
+        <div class="steps-title" data-i18n="how-title">How it works</div>
+        <div class="steps-grid">
           <div class="step">
-            <div class="step-number">1</div>
-            <h4 data-i18n="step1-title">Enable Remote</h4>
-            <p data-i18n="step1-desc">Click to enable remote access in Halo</p>
+            <div class="step-num">1</div>
+            <h4 data-i18n="st1-title">Enable</h4>
+            <p data-i18n="st1-desc">Turn on remote in Halo</p>
           </div>
           <div class="step">
-            <div class="step-number">2</div>
-            <h4 data-i18n="step2-title">Scan Code</h4>
-            <p data-i18n="step2-desc">Scan QR or enter URL in any browser</p>
+            <div class="step-num">2</div>
+            <h4 data-i18n="st2-title">Scan</h4>
+            <p data-i18n="st2-desc">QR code or type URL</p>
           </div>
           <div class="step">
-            <div class="step-number">3</div>
-            <h4 data-i18n="step3-title">Verify</h4>
-            <p data-i18n="step3-desc">Enter 6-digit code for secure connection</p>
+            <div class="step-num">3</div>
+            <h4 data-i18n="st3-title">Verify</h4>
+            <p data-i18n="st3-desc">6-digit secure code</p>
           </div>
           <div class="step">
-            <div class="step-number">4</div>
-            <h4 data-i18n="step4-title">Start Working</h4>
-            <p data-i18n="step4-desc">Full features, real-time sync</p>
+            <div class="step-num">4</div>
+            <h4 data-i18n="st4-title">Work</h4>
+            <p data-i18n="st4-desc">Full features, real-time</p>
           </div>
         </div>
       </div>
@@ -944,42 +1197,47 @@
   </section>
 
   <!-- Quick Start -->
-  <section class="quickstart-section">
-    <div class="section-container">
-      <div class="section-header">
-        <span class="section-label" data-i18n="quickstart-label">GET STARTED</span>
-        <h2 class="section-title" data-i18n="quickstart-title">30 Seconds to Start</h2>
-        <p class="section-subtitle" data-i18n="quickstart-subtitle">No technical background required</p>
+  <section class="quickstart">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag" data-i18n="qs-tag">Get Started</div>
+        <h2 class="section-title" data-i18n="qs-title">Ready in 30 seconds</h2>
+        <p class="section-desc" data-i18n="qs-desc">No technical background needed</p>
       </div>
 
-      <div class="quickstart-steps">
-        <div class="quick-step">
-          <div class="number">1</div>
-          <div class="text"><span data-i18n="quick1">Download & Install</span> <span data-i18n="quick1-sub">→ Double-click to run</span></div>
+      <div class="qs-steps">
+        <div class="qs-step fade-in delay-1">
+          <div class="qs-num">1</div>
+          <div class="qs-text"><span data-i18n="q1">Download</span> <span data-i18n="q1-sub">→ double-click to run</span></div>
         </div>
-        <div class="quick-step">
-          <div class="number">2</div>
-          <div class="text"><span data-i18n="quick2">Enter API Key</span> <span data-i18n="quick2-sub">→ Supports official & proxy</span></div>
+        <div class="qs-step fade-in delay-2">
+          <div class="qs-num">2</div>
+          <div class="qs-text"><span data-i18n="q2">Enter API Key</span> <span data-i18n="q2-sub">→ official or proxy</span></div>
         </div>
-        <div class="quick-step">
-          <div class="number">3</div>
-          <div class="text"><span data-i18n="quick3">Start Chatting</span> <span data-i18n="quick3-sub">→ Just say what you want</span></div>
+        <div class="qs-step fade-in delay-3">
+          <div class="qs-num">3</div>
+          <div class="qs-text"><span data-i18n="q3">Start chatting</span> <span data-i18n="q3-sub">→ just say what you need</span></div>
         </div>
       </div>
 
-      <p class="no-tech" data-i18n="no-tech">
+      <p class="qs-note fade-in delay-4" data-i18n="qs-note">
         No npm, no Node.js, no terminal, no environment variables<br>
-        <strong data-i18n="no-tech-strong">One-click install for everyone</strong>
+        <strong data-i18n="qs-strong">One-click install for everyone</strong>
       </p>
+
+      <div class="notice fade-in delay-5">
+        <p data-i18n="notice">Developer Preview — <a href="https://github.com/imwangfu/halo-release/issues" target="_blank" data-i18n="notice-link">Feedback welcome →</a></p>
+      </div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="cta-section">
-    <div class="cta-content">
-      <p class="cta-quote" data-i18n="cta-quote">"Put Claude Code in your pocket"</p>
-      <div class="download-buttons">
-        <a href="#" class="download-btn" id="mac-arm64-btn-2">
+  <section class="cta">
+    <div class="cta-bg"></div>
+    <div class="cta-content fade-in">
+      <p class="cta-quote" data-i18n="cta">"Put Claude Code in your pocket"</p>
+      <div class="btn-group" style="opacity: 1; animation: none;">
+        <a href="#" class="btn btn-primary" id="mac-arm64-btn-2">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
           <span data-i18n="download-now">Download Now</span>
         </a>
@@ -991,254 +1249,222 @@
   <footer>
     <p>
       Made with ❤️ ·
-      <a href="https://github.com/imwangfu/halo-release" target="_blank">GitHub</a> ·
-      <a href="https://github.com/imwangfu/halo-release/releases" target="_blank">Releases</a> ·
-      <a href="https://github.com/imwangfu/halo-release/issues" target="_blank" data-i18n="feedback">Feedback</a>
+      <a href="https://github.com/imwangfu/halo-release">GitHub</a> ·
+      <a href="https://github.com/imwangfu/halo-release/releases">Releases</a> ·
+      <a href="https://github.com/imwangfu/halo-release/issues" data-i18n="feedback">Feedback</a>
     </p>
   </footer>
 
   <script>
-    // Translations
     const i18n = {
       en: {
-        'banner': '🚧 Developer Preview · May contain bugs, feedback welcome',
-        'tagline': 'AI that works, anywhere',
-        'subtitle': 'If you use Claude Code, you\'ll love Halo.',
-        'description': 'Same Agent capabilities, better UI, plus something Claude Code can\'t do:',
-        'description-highlight': 'Control your computer from phone, iPad, or any browser',
-        'download-mac-arm': 'macOS (Apple Silicon)',
-        'download-mac-intel': 'macOS (Intel)',
-        'download-win': 'Windows',
-        'all-versions': 'All versions',
-        'compare-label': 'COMPARISON',
-        'compare-title': 'Switch from Claude Code',
-        'compare-subtitle': 'Same underlying capabilities, no changes to your workflow needed',
-        'feature-agent': 'Full Agent capabilities',
-        'feature-cli': 'Terminal CLI interface',
-        'feature-no-gui': 'No visual interface',
-        'feature-no-remote': 'No remote access',
-        'feature-need-node': 'Requires Node.js, npm, terminal',
+        'badge': 'Now in Developer Preview',
+        'hero-line1': 'AI that works',
+        'hero-line2': 'anywhere you go',
+        'hero-desc': 'If you use Claude Code, you\'ll love Halo. Same Agent, better interface, plus',
+        'hero-highlight': 'remote control from any device',
+        'dl-mac': 'macOS (Apple Silicon)',
+        'dl-intel': 'macOS (Intel)',
+        'dl-win': 'Windows',
+        'all-releases': 'All releases',
+        'compare-tag': 'Comparison',
+        'compare-title': 'Why switch from Claude Code?',
+        'compare-desc': 'Same underlying engine. No learning curve.',
+        'cc-1': 'Full Agent capabilities',
+        'cc-2': 'Terminal only, no GUI',
+        'cc-3': 'No remote access',
+        'cc-4': 'Requires Node.js & npm',
         'recommended': 'RECOMMENDED',
-        'halo-agent': 'Full Agent (same underlying engine)',
-        'halo-gui': 'Visual GUI with card-based status',
-        'halo-artifacts': 'Built-in artifact panel',
-        'halo-remote': 'Remote access from any device',
-        'halo-install': 'One-click install, ready to use',
-        'remote-label': 'KILLER FEATURE',
+        'halo-1': 'Same Agent, same engine',
+        'halo-2': 'Beautiful visual interface',
+        'halo-3': 'Remote from any device',
+        'halo-4': 'One-click install',
+        'remote-tag': 'Killer Feature',
         'remote-title': 'Remote Control',
-        'remote-subtitle': 'Your computer becomes a 24/7 AI workstation. All you need is a browser.',
-        'scenario-train-title': 'On the Train',
-        'scenario-train-desc': 'Pull out your phone and have your office computer run a data analysis script',
-        'scenario-meeting-title': 'In a Meeting',
-        'scenario-meeting-desc': 'Use your iPad to have your workstation fix a few lines of code and create a PR',
-        'scenario-home-title': 'At Home',
-        'scenario-home-desc': 'Connect to your work computer and let AI handle leftover tasks',
-        'how-it-works': 'How it works',
-        'step1-title': 'Enable Remote',
-        'step1-desc': 'Click to enable remote access in Halo',
-        'step2-title': 'Scan Code',
-        'step2-desc': 'Scan QR or enter URL in any browser',
-        'step3-title': 'Verify',
-        'step3-desc': 'Enter 6-digit code for secure connection',
-        'step4-title': 'Start Working',
-        'step4-desc': 'Full features, real-time sync',
-        'quickstart-label': 'GET STARTED',
-        'quickstart-title': '30 Seconds to Start',
-        'quickstart-subtitle': 'No technical background required',
-        'quick1': 'Download & Install',
-        'quick1-sub': '→ Double-click to run',
-        'quick2': 'Enter API Key',
-        'quick2-sub': '→ Supports official & proxy',
-        'quick3': 'Start Chatting',
-        'quick3-sub': '→ Just say what you want',
-        'no-tech': 'No npm, no Node.js, no terminal, no environment variables',
-        'no-tech-strong': 'One-click install for everyone',
-        'cta-quote': '"Put Claude Code in your pocket"',
+        'remote-desc': 'Your computer becomes a 24/7 AI workstation. All you need is a browser.',
+        's1-title': 'On the train',
+        's1-desc': 'Pull out your phone and run data analysis on your office computer',
+        's2-title': 'In a meeting',
+        's2-desc': 'Use your iPad to fix code and create a PR on your workstation',
+        's3-title': 'At home',
+        's3-desc': 'Connect to your work computer and let AI handle leftover tasks',
+        'how-title': 'How it works',
+        'st1-title': 'Enable',
+        'st1-desc': 'Turn on remote in Halo',
+        'st2-title': 'Scan',
+        'st2-desc': 'QR code or type URL',
+        'st3-title': 'Verify',
+        'st3-desc': '6-digit secure code',
+        'st4-title': 'Work',
+        'st4-desc': 'Full features, real-time',
+        'qs-tag': 'Get Started',
+        'qs-title': 'Ready in 30 seconds',
+        'qs-desc': 'No technical background needed',
+        'q1': 'Download',
+        'q1-sub': '→ double-click to run',
+        'q2': 'Enter API Key',
+        'q2-sub': '→ official or proxy',
+        'q3': 'Start chatting',
+        'q3-sub': '→ just say what you need',
+        'qs-note': 'No npm, no Node.js, no terminal, no environment variables',
+        'qs-strong': 'One-click install for everyone',
+        'notice': 'Developer Preview — ',
+        'notice-link': 'Stable version coming soon →',
+        'cta': '"Put Claude Code in your pocket"',
         'download-now': 'Download Now',
         'feedback': 'Feedback',
-        'build-time': 'Built on'
+        'build': 'Built'
       },
       zh: {
-        'banner': '🚧 开发者预览版 · 可能存在 Bug，欢迎反馈',
-        'tagline': '随时随地干活的 AI',
-        'subtitle': '如果你在用 Claude Code，你会喜欢 Halo。',
-        'description': '同样的 Agent 能力，更直观的界面，加上一个 Claude Code 做不到的事：',
-        'description-highlight': '手机、iPad、任意设备远程操控你的电脑干活',
-        'download-mac-arm': 'macOS (Apple Silicon)',
-        'download-mac-intel': 'macOS (Intel)',
-        'download-win': 'Windows',
-        'all-versions': '所有版本',
-        'compare-label': '对比',
-        'compare-title': '从 Claude Code 切换',
-        'compare-subtitle': '底层能力完全相同，无需改变使用习惯',
-        'feature-agent': '完整的 Agent 能力',
-        'feature-cli': '终端 CLI 界面',
-        'feature-no-gui': '无可视化界面',
-        'feature-no-remote': '无远程访问',
-        'feature-need-node': '需要 Node.js、npm、终端',
+        'badge': '开发者预览版',
+        'hero-line1': '随时随地',
+        'hero-line2': '干活的 AI',
+        'hero-desc': '如果你在用 Claude Code，你会喜欢 Halo。同样的 Agent，更好的界面，加上',
+        'hero-highlight': '任意设备远程操控电脑',
+        'dl-mac': 'macOS (Apple Silicon)',
+        'dl-intel': 'macOS (Intel)',
+        'dl-win': 'Windows',
+        'all-releases': '所有版本',
+        'compare-tag': '对比',
+        'compare-title': '为什么从 Claude Code 切换？',
+        'compare-desc': '同一套底层引擎，无需学习成本',
+        'cc-1': '完整的 Agent 能力',
+        'cc-2': '仅限终端，无图形界面',
+        'cc-3': '不支持远程访问',
+        'cc-4': '需要 Node.js 和 npm',
         'recommended': '推荐',
-        'halo-agent': '完整 Agent（同一套底层引擎）',
-        'halo-gui': '可视化 GUI，卡片式状态展示',
-        'halo-artifacts': '内置产物面板',
-        'halo-remote': '任意设备远程访问',
-        'halo-install': '一键安装，开箱即用',
-        'remote-label': '杀手级功能',
+        'halo-1': '相同的 Agent 引擎',
+        'halo-2': '精美的可视化界面',
+        'halo-3': '任意设备远程访问',
+        'halo-4': '一键安装',
+        'remote-tag': '杀手级功能',
         'remote-title': '远程控制',
-        'remote-subtitle': '你的电脑变成 7×24 待命的 AI 工作站，只需一个浏览器',
-        'scenario-train-title': '火车上',
-        'scenario-train-desc': '掏出手机，让办公室电脑跑一个数据分析脚本',
-        'scenario-meeting-title': '会议室里',
-        'scenario-meeting-desc': '用 iPad 让工位电脑改几行代码，提个 PR',
-        'scenario-home-title': '在家',
-        'scenario-home-desc': '用笔记本连到公司电脑，让 AI 处理遗留任务',
-        'how-it-works': '工作原理',
-        'step1-title': '开启远程',
-        'step1-desc': '在 Halo 中点击开启远程访问',
-        'step2-title': '扫码连接',
-        'step2-desc': '扫码或输入地址，任意浏览器打开',
-        'step3-title': '密码验证',
-        'step3-desc': '输入 6 位密码，安全连接',
-        'step4-title': '开始干活',
-        'step4-desc': '完整功能，实时同步',
-        'quickstart-label': '快速开始',
-        'quickstart-title': '30 秒上手',
-        'quickstart-subtitle': '不需要任何技术背景',
-        'quick1': '下载安装',
-        'quick1-sub': '→ 双击运行',
-        'quick2': '填入 API Key',
-        'quick2-sub': '→ 支持官方/代理地址',
-        'quick3': '开始对话',
-        'quick3-sub': '→ 直接说你要做什么',
-        'no-tech': '不需要 npm、不需要 Node.js、不需要终端、不需要配置环境变量',
-        'no-tech-strong': '普通用户一键安装，即可使用',
-        'cta-quote': '"把 Claude Code 装进口袋"',
+        'remote-desc': '你的电脑变成 7×24 待命的 AI 工作站，只需一个浏览器',
+        's1-title': '火车上',
+        's1-desc': '掏出手机，让办公室电脑跑数据分析脚本',
+        's2-title': '会议室里',
+        's2-desc': '用 iPad 让工位电脑改代码、提 PR',
+        's3-title': '在家',
+        's3-desc': '连到公司电脑，让 AI 处理遗留任务',
+        'how-title': '工作原理',
+        'st1-title': '开启',
+        'st1-desc': '在 Halo 中开启远程',
+        'st2-title': '扫码',
+        'st2-desc': '扫二维码或输入地址',
+        'st3-title': '验证',
+        'st3-desc': '6位安全密码',
+        'st4-title': '干活',
+        'st4-desc': '完整功能，实时同步',
+        'qs-tag': '快速开始',
+        'qs-title': '30 秒上手',
+        'qs-desc': '不需要任何技术背景',
+        'q1': '下载安装',
+        'q1-sub': '→ 双击运行',
+        'q2': '填入 API Key',
+        'q2-sub': '→ 支持官方/代理',
+        'q3': '开始对话',
+        'q3-sub': '→ 直接说你要做什么',
+        'qs-note': '不需要 npm、Node.js、终端、环境变量',
+        'qs-strong': '普通用户一键安装，即可使用',
+        'notice': '开发者预览版 · ',
+        'notice-link': '敬请期待稳定版本 →',
+        'cta': '"把 Claude Code 装进口袋"',
         'download-now': '立即下载',
         'feedback': '反馈问题',
-        'build-time': '构建时间'
+        'build': '构建于'
       }
     };
 
-    // Get browser language
     function getBrowserLang() {
-      const lang = navigator.language || navigator.userLanguage;
-      return lang.startsWith('zh') ? 'zh' : 'en';
+      return (navigator.language || '').startsWith('zh') ? 'zh' : 'en';
     }
 
-    // Set language
+    let buildTimestamp = null;
+
     function setLang(lang) {
       localStorage.setItem('halo-lang', lang);
       document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
 
-      // Update all elements
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (i18n[lang][key]) {
-          el.textContent = i18n[lang][key];
-        }
+        if (i18n[lang][key]) el.textContent = i18n[lang][key];
       });
 
-      // Update active button
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === lang);
       });
 
-      // Update build time format
-      updateBuildTime(lang);
-    }
-
-    // Update build time with correct locale
-    function updateBuildTime(lang) {
-      const el = document.getElementById('build-time');
-      if (el && el.dataset.timestamp) {
-        const date = new Date(el.dataset.timestamp);
+      if (buildTimestamp) {
+        const date = new Date(buildTimestamp);
         const locale = lang === 'zh' ? 'zh-CN' : 'en-US';
-        const formatted = date.toLocaleString(locale, {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: 'Asia/Shanghai'
+        const str = date.toLocaleString(locale, {
+          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
         });
-        el.textContent = i18n[lang]['build-time'] + ': ' + formatted;
+        document.getElementById('build-time').textContent = i18n[lang]['build'] + ' ' + str;
       }
     }
 
-    // Init language
     const savedLang = localStorage.getItem('halo-lang') || getBrowserLang();
     setLang(savedLang);
 
-    // Language switcher events
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.addEventListener('click', () => setLang(btn.dataset.lang));
     });
 
-    // Fetch latest release
-    async function fetchLatestRelease() {
-      try {
-        const response = await fetch('https://api.github.com/repos/imwangfu/halo-release/releases/latest');
-        if (!response.ok) return;
+    // Scroll animations with Intersection Observer
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
 
-        const data = await response.json();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
 
-        // Update version
-        const versionEl = document.getElementById('current-version');
-        if (versionEl && data.tag_name) {
-          versionEl.textContent = data.tag_name;
+    document.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right, .scale-in').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Fetch release
+    fetch('https://api.github.com/repos/imwangfu/halo-release/releases/latest')
+      .then(r => r.json())
+      .then(data => {
+        if (data.tag_name) {
+          document.getElementById('version').textContent = data.tag_name;
+        }
+        if (data.published_at) {
+          buildTimestamp = data.published_at;
+          setLang(localStorage.getItem('halo-lang') || getBrowserLang());
         }
 
-        // Store and display build time
-        const buildTimeEl = document.getElementById('build-time');
-        if (buildTimeEl && data.published_at) {
-          buildTimeEl.dataset.timestamp = data.published_at;
-          const currentLang = localStorage.getItem('halo-lang') || getBrowserLang();
-          updateBuildTime(currentLang);
-        }
-
-        // Find download URLs
-        const assets = data.assets || [];
         let urls = { arm64: null, x64: null, win: null };
+        (data.assets || []).forEach(a => {
+          const n = a.name.toLowerCase();
+          if (n.includes('arm64') && n.endsWith('.dmg')) urls.arm64 = a.browser_download_url;
+          else if (n.includes('x64') && n.endsWith('.dmg')) urls.x64 = a.browser_download_url;
+          else if (n.endsWith('.exe')) urls.win = a.browser_download_url;
+        });
 
-        for (const asset of assets) {
-          const name = asset.name.toLowerCase();
-          if (name.includes('arm64') && name.endsWith('.dmg')) {
-            urls.arm64 = asset.browser_download_url;
-          } else if (name.includes('x64') && name.endsWith('.dmg')) {
-            urls.x64 = asset.browser_download_url;
-          } else if (name.endsWith('.exe')) {
-            urls.win = asset.browser_download_url;
-          }
-        }
-
-        // Update buttons
-        const buttons = [
-          ['mac-arm64-btn', urls.arm64],
-          ['mac-arm64-btn-2', urls.arm64],
-          ['mac-x64-btn', urls.x64],
-          ['win-btn', urls.win]
-        ];
-
-        for (const [id, url] of buttons) {
+        [['mac-arm64-btn', urls.arm64], ['mac-arm64-btn-2', urls.arm64], ['mac-x64-btn', urls.x64], ['win-btn', urls.win]].forEach(([id, url]) => {
           const btn = document.getElementById(id);
-          if (!btn) continue;
-          if (url) {
-            btn.href = url;
-          } else {
-            btn.style.opacity = '0.5';
-            btn.style.pointerEvents = 'none';
+          if (btn) {
+            if (url) btn.href = url;
+            else { btn.style.opacity = '0.4'; btn.style.pointerEvents = 'none'; }
           }
-        }
-      } catch (e) {
-        console.log('Failed to fetch release:', e);
-        const fallback = 'https://github.com/imwangfu/halo-release/releases/latest';
+        });
+      })
+      .catch(() => {
+        const fb = 'https://github.com/imwangfu/halo-release/releases/latest';
         ['mac-arm64-btn', 'mac-arm64-btn-2', 'mac-x64-btn', 'win-btn'].forEach(id => {
           const btn = document.getElementById(id);
-          if (btn) btn.href = fallback;
+          if (btn) btn.href = fb;
         });
-      }
-    }
-
-    fetchLatestRelease();
+      });
   </script>
 </body>
 </html>
