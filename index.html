@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Halo - 能做事的 AI 助手</title>
+  <meta name="description" content="Halo 是一个真正能帮你做事的 AI 助手。不只是聊天，它能写代码、处理文件、分析数据，让 AI 从对话走向行动。">
+  <meta name="keywords" content="AI助手, Agent, Claude, 桌面应用, 效率工具">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Halo - 能做事的 AI 助手">
+  <meta property="og:description" content="不只是聊天，让 AI 真正帮你做事">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://imwangfu.github.io/halo-release">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='%2310b981' stroke-width='8'/></svg>">
+
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-tertiary: #1a1a1a;
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --accent: #10b981;
+      --accent-hover: #34d399;
+      --border: #27272a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated background glow */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    /* Logo */
+    .logo {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-ring {
+      width: 100%;
+      height: 100%;
+      border: 4px solid var(--accent);
+      border-radius: 50%;
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.6); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero .tagline {
+      font-size: 1.5rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero .description {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      margin-bottom: 3rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Download Buttons */
+    .download-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .download-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      background: var(--accent);
+      color: var(--bg-primary);
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .download-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .download-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .download-btn.secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .download-btn.secondary:hover {
+      background: var(--bg-secondary);
+      border-color: var(--accent);
+    }
+
+    .version-info {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .version-info a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .version-info a:hover {
+      color: var(--accent);
+    }
+
+    /* Features Section */
+    .features {
+      padding: 6rem 2rem;
+      background: var(--bg-secondary);
+    }
+
+    .features-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .features h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature-card {
+      background: var(--bg-tertiary);
+      padding: 2rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s ease;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent);
+    }
+
+    .feature-card .icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* Philosophy Section */
+    .philosophy {
+      padding: 6rem 2rem;
+      text-align: center;
+    }
+
+    .philosophy-container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .philosophy blockquote {
+      font-size: 1.5rem;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+
+    .philosophy .author {
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    footer {
+      padding: 3rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--accent);
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero .tagline {
+        font-size: 1.25rem;
+      }
+
+      .download-buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .download-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="logo">
+      <div class="logo-ring"></div>
+    </div>
+
+    <div class="hero-content">
+      <h1>Halo</h1>
+      <p class="tagline">能做事的 AI 助手</p>
+      <p class="description">
+        不只是聊天。写代码、处理文件、分析数据——让 AI 从对话走向行动。
+      </p>
+
+      <div class="download-section">
+        <div class="download-buttons">
+          <a href="https://github.com/imwangfu/halo-release/releases/latest/download/Halo-mac-arm64.dmg" class="download-btn" id="mac-arm64-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            macOS (Apple Silicon)
+          </a>
+          <a href="https://github.com/imwangfu/halo-release/releases/latest/download/Halo-mac-x64.dmg" class="download-btn secondary">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            macOS (Intel)
+          </a>
+        </div>
+        <div class="download-buttons">
+          <a href="https://github.com/imwangfu/halo-release/releases/latest/download/Halo-win-x64.exe" class="download-btn secondary">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.75l6-1.32v6.48L3 12m17-9v8.75l-10 .15V5.21L20 3M3 13l6 .09v6.81l-6-1.15V13m17 .25V22l-10-1.91V13.1l10 .15z"/></svg>
+            Windows
+          </a>
+        </div>
+        <p class="version-info">
+          <span id="current-version">v1.0.0</span> ·
+          <a href="https://github.com/imwangfu/halo-release/releases" target="_blank">所有版本</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="features-container">
+      <h2>为什么选择 Halo？</h2>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="icon">🚀</div>
+          <h3>真正的 Agent 能力</h3>
+          <p>不只是调用 API 聊天，而是完整的 Agent Loop。AI 可以思考、行动、观察、再行动，直到任务完成。</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon">🔑</div>
+          <h3>使用你自己的 API Key</h3>
+          <p>直连 Claude API，无中间商。数据直达，隐私安全，成本透明。</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon">💻</div>
+          <h3>原生桌面体验</h3>
+          <p>不是网页套壳，而是真正的桌面应用。原生性能，离线可用，系统深度集成。</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon">📂</div>
+          <h3>空间隔离</h3>
+          <p>每个项目一个独立空间，文件、对话、上下文完全隔离，互不干扰。</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon">🎨</div>
+          <h3>为普通用户设计</h3>
+          <p>不是程序员工具，是人人可用的 AI 助手。简洁直观，无需学习。</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon">🔄</div>
+          <h3>自动更新</h3>
+          <p>后台静默检查更新，一键升级。始终使用最新版本，体验最新功能。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Philosophy Section -->
+  <section class="philosophy">
+    <div class="philosophy-container">
+      <blockquote>
+        "就像 Windows 把 DOS 的命令行变成了桌面，<br>
+        Halo 要把 AI 从终端带到每个人的桌面上。"
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Made with ❤️ ·
+      <a href="https://github.com/imwangfu/halo-release" target="_blank">GitHub</a> ·
+      <a href="https://github.com/imwangfu/halo-release/releases" target="_blank">Releases</a>
+    </p>
+  </footer>
+
+  <script>
+    // Fetch latest version from GitHub API
+    async function fetchLatestVersion() {
+      try {
+        const response = await fetch('https://api.github.com/repos/imwangfu/halo-release/releases/latest');
+        if (response.ok) {
+          const data = await response.json();
+          const versionEl = document.getElementById('current-version');
+          if (versionEl && data.tag_name) {
+            versionEl.textContent = data.tag_name;
+          }
+        }
+      } catch (e) {
+        console.log('Failed to fetch version:', e);
+      }
+    }
+
+    fetchLatestVersion();
+
+    // Detect platform and highlight appropriate download button
+    function detectPlatform() {
+      const ua = navigator.userAgent.toLowerCase();
+      const platform = navigator.platform.toLowerCase();
+
+      if (platform.includes('mac') || ua.includes('mac')) {
+        // Check for Apple Silicon
+        // Note: This is a best-effort detection
+        const isAppleSilicon =
+          (navigator.userAgent.includes('Mac') &&
+           typeof navigator.hardwareConcurrency !== 'undefined' &&
+           navigator.hardwareConcurrency >= 8);
+
+        // Highlight the appropriate Mac button
+        // For simplicity, we'll highlight Apple Silicon as primary on Mac
+      }
+    }
+
+    detectPlatform();
+  </script>
+</body>
+</html>
