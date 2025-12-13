@@ -3,34 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Halo - 随时随地干活的 AI</title>
-  <meta name="description" content="把 Claude Code 装进口袋。同样的 Agent 能力，更直观的界面，加上远程控制——手机、iPad、任意设备操控你的电脑干活。">
-  <meta name="keywords" content="AI助手, Claude Code, Agent, 远程控制, 桌面应用">
+  <title>Halo - AI that works for you</title>
+  <meta name="description" content="Put Claude Code in your pocket. Same Agent capabilities, better UI, plus remote control from any device.">
+  <meta name="keywords" content="AI Assistant, Claude Code, Agent, Remote Control, Desktop App">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Halo - 随时随地干活的 AI">
-  <meta property="og:description" content="把 Claude Code 装进口袋。手机、iPad 远程操控电脑干活。">
+  <meta property="og:title" content="Halo - AI that works for you">
+  <meta property="og:description" content="Put Claude Code in your pocket. Control your computer from anywhere.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://imwangfu.github.io/halo-release">
 
-  <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='%2310b981' stroke-width='8'/></svg>">
+
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg-primary: #09090b;
-      --bg-secondary: #111113;
-      --bg-tertiary: #18181b;
-      --bg-card: #1c1c1f;
-      --text-primary: #fafafa;
-      --text-secondary: #a1a1aa;
-      --text-muted: #71717a;
+      --bg-primary: #000000;
+      --bg-secondary: #0a0a0a;
+      --bg-tertiary: #111111;
+      --bg-card: #161616;
+      --bg-card-hover: #1a1a1a;
+      --text-primary: #ffffff;
+      --text-secondary: #888888;
+      --text-muted: #555555;
       --accent: #10b981;
       --accent-hover: #34d399;
-      --accent-dim: rgba(16, 185, 129, 0.15);
-      --border: #27272a;
-      --border-light: #3f3f46;
-      --warning: #f59e0b;
+      --accent-glow: rgba(16, 185, 129, 0.4);
+      --accent-dim: rgba(16, 185, 129, 0.1);
+      --border: #222222;
+      --border-light: #333333;
+      --gradient-start: #10b981;
+      --gradient-end: #059669;
     }
 
     * {
@@ -39,22 +45,63 @@
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--bg-primary);
       color: var(--text-primary);
       line-height: 1.6;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
     /* Preview Banner */
     .preview-banner {
-      background: linear-gradient(90deg, var(--warning), #d97706);
+      background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
       color: #000;
       text-align: center;
-      padding: 0.5rem 1rem;
-      font-size: 0.875rem;
+      padding: 0.625rem 1rem;
+      font-size: 0.8125rem;
       font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    /* Language Switcher */
+    .lang-switcher {
+      position: fixed;
+      top: 52px;
+      right: 24px;
+      z-index: 100;
+      display: flex;
+      gap: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .lang-btn {
+      padding: 0.5rem 0.875rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .lang-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-card-hover);
+    }
+
+    .lang-btn.active {
+      color: var(--accent);
+      background: var(--accent-dim);
     }
 
     /* Hero Section */
@@ -65,65 +112,103 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 3rem 2rem;
+      padding: 4rem 2rem;
       position: relative;
       overflow: hidden;
     }
 
+    /* Gradient orbs */
     .hero::before {
       content: '';
       position: absolute;
-      top: 30%;
+      top: -20%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, var(--accent-dim) 0%, transparent 60%);
+      transform: translateX(-50%);
+      width: 1000px;
+      height: 1000px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 50%);
       pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
     }
 
     .hero-content {
       position: relative;
       z-index: 1;
-      max-width: 800px;
+      max-width: 900px;
     }
 
+    /* Logo */
     .logo-container {
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
     }
 
     .logo {
-      width: 80px;
-      height: 80px;
+      width: 88px;
+      height: 88px;
       border: 3px solid var(--accent);
       border-radius: 50%;
-      display: inline-block;
-      animation: glow 3s ease-in-out infinite;
+      position: relative;
+      animation: logo-pulse 4s ease-in-out infinite;
     }
 
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
-      50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.5); }
+    .logo::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 50%;
+      animation: logo-ring 4s ease-in-out infinite;
+    }
+
+    @keyframes logo-pulse {
+      0%, 100% {
+        box-shadow: 0 0 30px var(--accent-glow), inset 0 0 20px rgba(16, 185, 129, 0.1);
+      }
+      50% {
+        box-shadow: 0 0 50px var(--accent-glow), inset 0 0 30px rgba(16, 185, 129, 0.15);
+      }
+    }
+
+    @keyframes logo-ring {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 0.8; }
     }
 
     .hero h1 {
-      font-size: 3.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.03em;
+      font-size: 4.5rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, #fff 0%, #888 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .hero .tagline {
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       color: var(--accent);
       margin-bottom: 1.5rem;
-      font-weight: 500;
+      font-weight: 600;
+      letter-spacing: -0.02em;
     }
 
     .hero .subtitle {
-      font-size: 1.25rem;
+      font-size: 1.125rem;
       color: var(--text-secondary);
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
@@ -132,10 +217,15 @@
     .hero .description {
       font-size: 1rem;
       color: var(--text-muted);
-      margin-bottom: 2.5rem;
-      max-width: 550px;
+      margin-bottom: 3rem;
+      max-width: 540px;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    .hero .description strong {
+      color: var(--text-primary);
+      font-weight: 500;
     }
 
     /* Download Section */
@@ -143,7 +233,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.25rem;
+      gap: 1.5rem;
     }
 
     .download-buttons {
@@ -156,20 +246,21 @@
     .download-btn {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.875rem 1.5rem;
-      background: var(--accent);
-      color: var(--bg-primary);
+      gap: 0.625rem;
+      padding: 0.875rem 1.75rem;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      color: #000;
       text-decoration: none;
-      border-radius: 10px;
+      border-radius: 12px;
       font-weight: 600;
-      font-size: 0.95rem;
-      transition: all 0.2s ease;
+      font-size: 0.9375rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
     }
 
     .download-btn:hover {
-      background: var(--accent-hover);
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
     }
 
     .download-btn svg {
@@ -178,304 +269,441 @@
     }
 
     .download-btn.secondary {
-      background: var(--bg-tertiary);
+      background: var(--bg-card);
       color: var(--text-primary);
       border: 1px solid var(--border);
+      box-shadow: none;
     }
 
     .download-btn.secondary:hover {
-      background: var(--bg-card);
+      background: var(--bg-card-hover);
       border-color: var(--accent);
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
     }
 
     .version-info {
-      font-size: 0.8rem;
+      font-size: 0.8125rem;
       color: var(--text-muted);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.25rem;
+      gap: 0.375rem;
     }
 
     .version-info a {
       color: var(--text-secondary);
       text-decoration: none;
+      transition: color 0.2s;
     }
 
     .version-info a:hover {
       color: var(--accent);
     }
 
-    .build-time {
-      font-size: 0.75rem;
-      color: var(--text-muted);
+    /* Section Common */
+    section {
+      position: relative;
     }
 
-    /* For Claude Code Users */
-    .claude-code-section {
-      padding: 4rem 2rem;
-      background: var(--bg-secondary);
+    section::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
     }
 
     .section-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+      padding: 0.375rem 0.875rem;
+      background: var(--accent-dim);
+      border-radius: 100px;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+      font-size: 1.0625rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Comparison Section */
+    .comparison-section {
+      padding: 6rem 0;
+      background: var(--bg-secondary);
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
       max-width: 900px;
       margin: 0 auto;
     }
 
-    .section-title {
-      font-size: 1.75rem;
-      text-align: center;
-      margin-bottom: 0.5rem;
-    }
-
-    .section-subtitle {
-      text-align: center;
-      color: var(--text-secondary);
-      margin-bottom: 2.5rem;
-      font-size: 1rem;
-    }
-
-    /* Comparison Table */
-    .comparison-table {
+    .comparison-card {
       background: var(--bg-card);
-      border-radius: 16px;
       border: 1px solid var(--border);
-      overflow: hidden;
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s;
     }
 
-    .comparison-table table {
-      width: 100%;
-      border-collapse: collapse;
+    .comparison-card:hover {
+      border-color: var(--border-light);
+      transform: translateY(-2px);
     }
 
-    .comparison-table th,
-    .comparison-table td {
-      padding: 1rem 1.25rem;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
+    .comparison-card.highlight {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%);
     }
 
-    .comparison-table th {
+    .comparison-card .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .comparison-card .card-icon {
+      width: 40px;
+      height: 40px;
       background: var(--bg-tertiary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .comparison-card.highlight .card-icon {
+      background: var(--accent-dim);
+    }
+
+    .comparison-card .card-title {
+      font-size: 1.25rem;
       font-weight: 600;
-      color: var(--text-primary);
     }
 
-    .comparison-table th:first-child {
-      width: 40%;
+    .comparison-card .card-badge {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--accent-dim);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      margin-left: auto;
     }
 
-    .comparison-table td {
+    .feature-list {
+      list-style: none;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9375rem;
       color: var(--text-secondary);
     }
 
-    .comparison-table tr:last-child td {
+    .feature-list li:last-child {
       border-bottom: none;
     }
 
-    .comparison-table .feature-name {
+    .feature-list .icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .feature-list .check {
+      color: var(--accent);
+    }
+
+    .feature-list .cross {
+      color: var(--text-muted);
+    }
+
+    .feature-list .feature-highlight {
       color: var(--text-primary);
       font-weight: 500;
     }
 
-    .check {
-      color: var(--accent);
-    }
-
-    .cross {
-      color: var(--text-muted);
-    }
-
-    .highlight-cell {
-      background: var(--accent-dim);
-      color: var(--accent) !important;
-      font-weight: 500;
-    }
-
-    /* Killer Feature */
-    .killer-feature {
-      padding: 5rem 2rem;
+    /* Remote Feature */
+    .remote-section {
+      padding: 6rem 0;
       background: var(--bg-primary);
     }
 
-    .killer-feature .section-title {
-      margin-bottom: 1rem;
-    }
-
-    .killer-feature .section-title span {
-      color: var(--accent);
-    }
-
-    .scenarios {
+    .remote-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.25rem;
       margin-bottom: 3rem;
     }
 
     .scenario-card {
       background: var(--bg-card);
-      padding: 1.5rem;
-      border-radius: 12px;
       border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scenario-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .scenario-card:hover {
+      border-color: var(--border-light);
+      transform: translateY(-4px);
+    }
+
+    .scenario-card:hover::before {
+      opacity: 1;
     }
 
     .scenario-card .emoji {
-      font-size: 1.5rem;
-      margin-bottom: 0.75rem;
+      font-size: 2rem;
+      margin-bottom: 1rem;
     }
 
     .scenario-card h3 {
-      font-size: 1rem;
+      font-size: 1.0625rem;
+      font-weight: 600;
       margin-bottom: 0.5rem;
-      color: var(--text-primary);
     }
 
     .scenario-card p {
-      font-size: 0.9rem;
+      font-size: 0.875rem;
       color: var(--text-secondary);
+      line-height: 1.6;
     }
 
-    /* How it works */
-    .how-it-works {
-      background: var(--bg-tertiary);
-      border-radius: 16px;
-      padding: 2rem;
+    /* Steps */
+    .steps-container {
+      background: var(--bg-card);
       border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
     }
 
-    .how-it-works h3 {
-      font-size: 1.1rem;
-      margin-bottom: 1.5rem;
-      color: var(--text-primary);
+    .steps-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .steps-title::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 2px;
     }
 
     .steps {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
     }
 
     .step {
-      flex: 1;
-      min-width: 180px;
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
+      text-align: center;
     }
 
     .step-number {
-      width: 28px;
-      height: 28px;
-      background: var(--accent);
-      color: var(--bg-primary);
-      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      color: #000;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 0.85rem;
-      flex-shrink: 0;
+      font-size: 1.125rem;
+      margin: 0 auto 1rem;
     }
 
-    .step-content h4 {
-      font-size: 0.95rem;
-      margin-bottom: 0.25rem;
+    .step h4 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      margin-bottom: 0.375rem;
     }
 
-    .step-content p {
-      font-size: 0.85rem;
+    .step p {
+      font-size: 0.8125rem;
       color: var(--text-muted);
     }
 
     /* Quick Start */
-    .quick-start {
-      padding: 4rem 2rem;
+    .quickstart-section {
+      padding: 6rem 0;
       background: var(--bg-secondary);
     }
 
-    .quick-start-steps {
+    .quickstart-steps {
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      max-width: 500px;
-      margin: 0 auto;
+      max-width: 480px;
+      margin: 0 auto 2rem;
     }
 
     .quick-step {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 1.25rem;
       background: var(--bg-card);
       padding: 1.25rem 1.5rem;
-      border-radius: 12px;
+      border-radius: 14px;
       border: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+
+    .quick-step:hover {
+      border-color: var(--border-light);
+      transform: translateX(4px);
     }
 
     .quick-step .number {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       background: var(--accent-dim);
       color: var(--accent);
-      border-radius: 8px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
+      font-size: 0.9375rem;
       flex-shrink: 0;
     }
 
     .quick-step .text {
-      color: var(--text-primary);
+      font-size: 0.9375rem;
     }
 
     .quick-step .text span {
       color: var(--text-muted);
-      font-size: 0.9rem;
     }
 
     .no-tech {
       text-align: center;
-      margin-top: 2rem;
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.875rem;
+      line-height: 1.8;
     }
 
-    /* CTA Quote */
-    .cta-quote {
-      padding: 4rem 2rem;
+    .no-tech strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 6rem 0;
       text-align: center;
-      background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      background: var(--bg-primary);
+      position: relative;
+      overflow: hidden;
     }
 
-    .cta-quote blockquote {
-      font-size: 1.5rem;
-      color: var(--text-secondary);
-      max-width: 600px;
-      margin: 0 auto 2rem;
-      line-height: 1.6;
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 400px;
+      background: radial-gradient(ellipse, var(--accent-dim) 0%, transparent 60%);
+      pointer-events: none;
     }
 
-    .cta-quote blockquote span {
-      color: var(--accent);
+    .cta-section::after {
+      display: none;
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-quote {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 2.5rem;
+      background: linear-gradient(135deg, var(--accent) 0%, #fff 50%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     /* Footer */
     footer {
       padding: 2rem;
       text-align: center;
+      background: var(--bg-secondary);
       border-top: 1px solid var(--border);
     }
 
     footer p {
       color: var(--text-muted);
-      font-size: 0.85rem;
+      font-size: 0.8125rem;
     }
 
     footer a {
       color: var(--text-secondary);
       text-decoration: none;
-      margin: 0 0.5rem;
+      margin: 0 0.625rem;
+      transition: color 0.2s;
     }
 
     footer a:hover {
@@ -483,37 +711,37 @@
     }
 
     /* Responsive */
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 2.5rem;
+    @media (max-width: 900px) {
+      .comparison-grid {
+        grid-template-columns: 1fr;
       }
 
-      .hero .tagline {
-        font-size: 1.35rem;
-      }
-
-      .hero .subtitle {
-        font-size: 1.1rem;
-      }
-
-      .comparison-table {
-        font-size: 0.9rem;
-      }
-
-      .comparison-table th,
-      .comparison-table td {
-        padding: 0.75rem;
+      .remote-grid {
+        grid-template-columns: 1fr;
       }
 
       .steps {
-        flex-direction: column;
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 640px) {
+      .hero h1 {
+        font-size: 3rem;
+      }
+
+      .hero .tagline {
+        font-size: 1.25rem;
+      }
+
+      .section-title {
+        font-size: 1.75rem;
+      }
+
       .download-buttons {
         flex-direction: column;
         width: 100%;
+        max-width: 300px;
       }
 
       .download-btn {
@@ -521,20 +749,28 @@
         justify-content: center;
       }
 
-      .hero h1 {
-        font-size: 2rem;
+      .steps {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
       }
 
-      .section-title {
-        font-size: 1.4rem;
+      .lang-switcher {
+        top: 44px;
+        right: 12px;
       }
     }
   </style>
 </head>
 <body>
   <!-- Preview Banner -->
-  <div class="preview-banner">
-    🚧 开发者预览版 · 可能存在 Bug，欢迎反馈
+  <div class="preview-banner" data-i18n="banner">
+    🚧 Developer Preview · May contain bugs, feedback welcome
+  </div>
+
+  <!-- Language Switcher -->
+  <div class="lang-switcher">
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="zh">中文</button>
   </div>
 
   <!-- Hero Section -->
@@ -545,147 +781,162 @@
       </div>
 
       <h1>Halo</h1>
-      <p class="tagline">随时随地干活的 AI</p>
-      <p class="subtitle">
-        如果你在用 Claude Code，你会喜欢 Halo。
+      <p class="tagline" data-i18n="tagline">AI that works, anywhere</p>
+      <p class="subtitle" data-i18n="subtitle">
+        If you use Claude Code, you'll love Halo.
       </p>
-      <p class="description">
-        同样的 Agent 能力，更直观的界面，加上一个 Claude Code 做不到的事：<br>
-        <strong style="color: var(--text-primary);">手机、iPad、任意设备远程操控你的电脑干活</strong>——全程自然语言。
+      <p class="description" data-i18n="description">
+        Same Agent capabilities, better UI, plus something Claude Code can't do:<br>
+        <strong data-i18n="description-highlight">Control your computer from phone, iPad, or any browser</strong> — using natural language.
       </p>
 
       <div class="download-section">
         <div class="download-buttons">
           <a href="#" class="download-btn" id="mac-arm64-btn">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-            macOS (Apple Silicon)
+            <span data-i18n="download-mac-arm">macOS (Apple Silicon)</span>
           </a>
           <a href="#" class="download-btn secondary" id="mac-x64-btn">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-            macOS (Intel)
+            <span data-i18n="download-mac-intel">macOS (Intel)</span>
           </a>
           <a href="#" class="download-btn secondary" id="win-btn">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.75l6-1.32v6.48L3 12m17-9v8.75l-10 .15V5.21L20 3M3 13l6 .09v6.81l-6-1.15V13m17 .25V22l-10-1.91V13.1l10 .15z"/></svg>
-            Windows
+            <span data-i18n="download-win">Windows</span>
           </a>
         </div>
         <div class="version-info">
           <div>
             <span id="current-version">v1.0.0</span> ·
-            <a href="https://github.com/imwangfu/halo-release/releases" target="_blank">所有版本</a>
+            <a href="https://github.com/imwangfu/halo-release/releases" target="_blank" data-i18n="all-versions">All versions</a>
           </div>
-          <div class="build-time" id="build-time"></div>
+          <div id="build-time"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- For Claude Code Users -->
-  <section class="claude-code-section">
+  <!-- Comparison Section -->
+  <section class="comparison-section">
     <div class="section-container">
-      <h2 class="section-title">从 Claude Code 切换到 Halo</h2>
-      <p class="section-subtitle">你不需要改变任何使用习惯，底层是同一套能力</p>
+      <div class="section-header">
+        <span class="section-label" data-i18n="compare-label">COMPARISON</span>
+        <h2 class="section-title" data-i18n="compare-title">Switch from Claude Code</h2>
+        <p class="section-subtitle" data-i18n="compare-subtitle">Same underlying capabilities, no changes to your workflow needed</p>
+      </div>
 
-      <div class="comparison-table">
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Claude Code</th>
-              <th>Halo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="feature-name">Agent 能力</td>
-              <td><span class="check">✓</span> 完整</td>
-              <td><span class="check">✓</span> 完整 (同一套底层)</td>
-            </tr>
-            <tr>
-              <td class="feature-name">界面</td>
-              <td>终端 CLI</td>
-              <td>可视化 GUI</td>
-            </tr>
-            <tr>
-              <td class="feature-name">工具调用</td>
-              <td>文字滚动</td>
-              <td>卡片式状态展示</td>
-            </tr>
-            <tr>
-              <td class="feature-name">产物管理</td>
-              <td>ls 自己找</td>
-              <td>右侧产物栏，一目了然</td>
-            </tr>
-            <tr>
-              <td class="feature-name">远程访问</td>
-              <td><span class="cross">✗</span></td>
-              <td class="highlight-cell"><span class="check">✓</span> 手机/Pad/任意浏览器</td>
-            </tr>
-            <tr>
-              <td class="feature-name">安装门槛</td>
-              <td>需要 Node.js、npm、终端</td>
-              <td>双击安装，开箱即用</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="card-header">
+            <div class="card-icon">⌨️</div>
+            <div class="card-title">Claude Code</div>
+          </div>
+          <ul class="feature-list">
+            <li>
+              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span data-i18n="feature-agent">Full Agent capabilities</span>
+            </li>
+            <li>
+              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span data-i18n="feature-cli">Terminal CLI interface</span>
+            </li>
+            <li>
+              <svg class="icon cross" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              <span data-i18n="feature-no-gui">No visual interface</span>
+            </li>
+            <li>
+              <svg class="icon cross" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              <span data-i18n="feature-no-remote">No remote access</span>
+            </li>
+            <li>
+              <svg class="icon cross" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              <span data-i18n="feature-need-node">Requires Node.js, npm, terminal</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="comparison-card highlight">
+          <div class="card-header">
+            <div class="card-icon">○</div>
+            <div class="card-title">Halo</div>
+            <span class="card-badge" data-i18n="recommended">RECOMMENDED</span>
+          </div>
+          <ul class="feature-list">
+            <li>
+              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span data-i18n="halo-agent">Full Agent (same underlying engine)</span>
+            </li>
+            <li>
+              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span data-i18n="halo-gui">Visual GUI with card-based status</span>
+            </li>
+            <li>
+              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span data-i18n="halo-artifacts">Built-in artifact panel</span>
+            </li>
+            <li>
+              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span class="feature-highlight" data-i18n="halo-remote">Remote access from any device</span>
+            </li>
+            <li>
+              <svg class="icon check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span data-i18n="halo-install">One-click install, ready to use</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Killer Feature: Remote Control -->
-  <section class="killer-feature">
+  <!-- Remote Feature -->
+  <section class="remote-section">
     <div class="section-container">
-      <h2 class="section-title">杀手级功能：<span>远程控制</span></h2>
-      <p class="section-subtitle">你的电脑变成 7×24 待命的 AI 工作站，而你只需要一个浏览器</p>
+      <div class="section-header">
+        <span class="section-label" data-i18n="remote-label">KILLER FEATURE</span>
+        <h2 class="section-title" data-i18n="remote-title">Remote Control</h2>
+        <p class="section-subtitle" data-i18n="remote-subtitle">Your computer becomes a 24/7 AI workstation. All you need is a browser.</p>
+      </div>
 
-      <div class="scenarios">
+      <div class="remote-grid">
         <div class="scenario-card">
           <div class="emoji">🚄</div>
-          <h3>火车上</h3>
-          <p>掏出手机，让办公室电脑跑一个数据分析脚本</p>
+          <h3 data-i18n="scenario-train-title">On the Train</h3>
+          <p data-i18n="scenario-train-desc">Pull out your phone and have your office computer run a data analysis script</p>
         </div>
         <div class="scenario-card">
           <div class="emoji">🏢</div>
-          <h3>会议室里</h3>
-          <p>用 iPad 让工位电脑改几行代码，提个 PR</p>
+          <h3 data-i18n="scenario-meeting-title">In a Meeting</h3>
+          <p data-i18n="scenario-meeting-desc">Use your iPad to have your workstation fix a few lines of code and create a PR</p>
         </div>
         <div class="scenario-card">
           <div class="emoji">🏠</div>
-          <h3>在家</h3>
-          <p>用笔记本连到公司电脑，让 AI 处理遗留任务</p>
+          <h3 data-i18n="scenario-home-title">At Home</h3>
+          <p data-i18n="scenario-home-desc">Connect to your work computer and let AI handle leftover tasks</p>
         </div>
       </div>
 
-      <div class="how-it-works">
-        <h3>工作原理</h3>
+      <div class="steps-container">
+        <div class="steps-title" data-i18n="how-it-works">How it works</div>
         <div class="steps">
           <div class="step">
             <div class="step-number">1</div>
-            <div class="step-content">
-              <h4>开启远程</h4>
-              <p>电脑上运行 Halo，点击开启远程访问</p>
-            </div>
+            <h4 data-i18n="step1-title">Enable Remote</h4>
+            <p data-i18n="step1-desc">Click to enable remote access in Halo</p>
           </div>
           <div class="step">
             <div class="step-number">2</div>
-            <div class="step-content">
-              <h4>扫码连接</h4>
-              <p>扫码或输入地址，任意设备浏览器打开</p>
-            </div>
+            <h4 data-i18n="step2-title">Scan Code</h4>
+            <p data-i18n="step2-desc">Scan QR or enter URL in any browser</p>
           </div>
           <div class="step">
             <div class="step-number">3</div>
-            <div class="step-content">
-              <h4>密码验证</h4>
-              <p>6 位密码验证，安全连接</p>
-            </div>
+            <h4 data-i18n="step3-title">Verify</h4>
+            <p data-i18n="step3-desc">Enter 6-digit code for secure connection</p>
           </div>
           <div class="step">
             <div class="step-number">4</div>
-            <div class="step-content">
-              <h4>开始干活</h4>
-              <p>完整功能，实时同步</p>
-            </div>
+            <h4 data-i18n="step4-title">Start Working</h4>
+            <p data-i18n="step4-desc">Full features, real-time sync</p>
           </div>
         </div>
       </div>
@@ -693,43 +944,46 @@
   </section>
 
   <!-- Quick Start -->
-  <section class="quick-start">
+  <section class="quickstart-section">
     <div class="section-container">
-      <h2 class="section-title">30 秒上手</h2>
-      <p class="section-subtitle">不需要任何技术背景</p>
+      <div class="section-header">
+        <span class="section-label" data-i18n="quickstart-label">GET STARTED</span>
+        <h2 class="section-title" data-i18n="quickstart-title">30 Seconds to Start</h2>
+        <p class="section-subtitle" data-i18n="quickstart-subtitle">No technical background required</p>
+      </div>
 
-      <div class="quick-start-steps">
+      <div class="quickstart-steps">
         <div class="quick-step">
           <div class="number">1</div>
-          <div class="text">下载安装 <span>→ 双击运行</span></div>
+          <div class="text"><span data-i18n="quick1">Download & Install</span> <span data-i18n="quick1-sub">→ Double-click to run</span></div>
         </div>
         <div class="quick-step">
           <div class="number">2</div>
-          <div class="text">填入 API Key <span>→ 支持官方/代理地址</span></div>
+          <div class="text"><span data-i18n="quick2">Enter API Key</span> <span data-i18n="quick2-sub">→ Supports official & proxy</span></div>
         </div>
         <div class="quick-step">
           <div class="number">3</div>
-          <div class="text">开始对话 <span>→ 直接说你要做什么</span></div>
+          <div class="text"><span data-i18n="quick3">Start Chatting</span> <span data-i18n="quick3-sub">→ Just say what you want</span></div>
         </div>
       </div>
 
-      <p class="no-tech">
-        不需要 npm、不需要 Node.js、不需要终端、不需要配置环境变量<br>
-        <strong>普通用户一键安装，即可使用</strong>
+      <p class="no-tech" data-i18n="no-tech">
+        No npm, no Node.js, no terminal, no environment variables<br>
+        <strong data-i18n="no-tech-strong">One-click install for everyone</strong>
       </p>
     </div>
   </section>
 
-  <!-- CTA Quote -->
-  <section class="cta-quote">
-    <blockquote>
-      "<span>把 Claude Code 装进口袋</span>"
-    </blockquote>
-    <div class="download-buttons">
-      <a href="#" class="download-btn" id="mac-arm64-btn-2">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-        立即下载
-      </a>
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <p class="cta-quote" data-i18n="cta-quote">"Put Claude Code in your pocket"</p>
+      <div class="download-buttons">
+        <a href="#" class="download-btn" id="mac-arm64-btn-2">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <span data-i18n="download-now">Download Now</span>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -739,12 +993,187 @@
       Made with ❤️ ·
       <a href="https://github.com/imwangfu/halo-release" target="_blank">GitHub</a> ·
       <a href="https://github.com/imwangfu/halo-release/releases" target="_blank">Releases</a> ·
-      <a href="https://github.com/imwangfu/halo-release/issues" target="_blank">反馈问题</a>
+      <a href="https://github.com/imwangfu/halo-release/issues" target="_blank" data-i18n="feedback">Feedback</a>
     </p>
   </footer>
 
   <script>
-    // Fetch latest release and update download links
+    // Translations
+    const i18n = {
+      en: {
+        'banner': '🚧 Developer Preview · May contain bugs, feedback welcome',
+        'tagline': 'AI that works, anywhere',
+        'subtitle': 'If you use Claude Code, you\'ll love Halo.',
+        'description': 'Same Agent capabilities, better UI, plus something Claude Code can\'t do:',
+        'description-highlight': 'Control your computer from phone, iPad, or any browser',
+        'download-mac-arm': 'macOS (Apple Silicon)',
+        'download-mac-intel': 'macOS (Intel)',
+        'download-win': 'Windows',
+        'all-versions': 'All versions',
+        'compare-label': 'COMPARISON',
+        'compare-title': 'Switch from Claude Code',
+        'compare-subtitle': 'Same underlying capabilities, no changes to your workflow needed',
+        'feature-agent': 'Full Agent capabilities',
+        'feature-cli': 'Terminal CLI interface',
+        'feature-no-gui': 'No visual interface',
+        'feature-no-remote': 'No remote access',
+        'feature-need-node': 'Requires Node.js, npm, terminal',
+        'recommended': 'RECOMMENDED',
+        'halo-agent': 'Full Agent (same underlying engine)',
+        'halo-gui': 'Visual GUI with card-based status',
+        'halo-artifacts': 'Built-in artifact panel',
+        'halo-remote': 'Remote access from any device',
+        'halo-install': 'One-click install, ready to use',
+        'remote-label': 'KILLER FEATURE',
+        'remote-title': 'Remote Control',
+        'remote-subtitle': 'Your computer becomes a 24/7 AI workstation. All you need is a browser.',
+        'scenario-train-title': 'On the Train',
+        'scenario-train-desc': 'Pull out your phone and have your office computer run a data analysis script',
+        'scenario-meeting-title': 'In a Meeting',
+        'scenario-meeting-desc': 'Use your iPad to have your workstation fix a few lines of code and create a PR',
+        'scenario-home-title': 'At Home',
+        'scenario-home-desc': 'Connect to your work computer and let AI handle leftover tasks',
+        'how-it-works': 'How it works',
+        'step1-title': 'Enable Remote',
+        'step1-desc': 'Click to enable remote access in Halo',
+        'step2-title': 'Scan Code',
+        'step2-desc': 'Scan QR or enter URL in any browser',
+        'step3-title': 'Verify',
+        'step3-desc': 'Enter 6-digit code for secure connection',
+        'step4-title': 'Start Working',
+        'step4-desc': 'Full features, real-time sync',
+        'quickstart-label': 'GET STARTED',
+        'quickstart-title': '30 Seconds to Start',
+        'quickstart-subtitle': 'No technical background required',
+        'quick1': 'Download & Install',
+        'quick1-sub': '→ Double-click to run',
+        'quick2': 'Enter API Key',
+        'quick2-sub': '→ Supports official & proxy',
+        'quick3': 'Start Chatting',
+        'quick3-sub': '→ Just say what you want',
+        'no-tech': 'No npm, no Node.js, no terminal, no environment variables',
+        'no-tech-strong': 'One-click install for everyone',
+        'cta-quote': '"Put Claude Code in your pocket"',
+        'download-now': 'Download Now',
+        'feedback': 'Feedback',
+        'build-time': 'Built on'
+      },
+      zh: {
+        'banner': '🚧 开发者预览版 · 可能存在 Bug，欢迎反馈',
+        'tagline': '随时随地干活的 AI',
+        'subtitle': '如果你在用 Claude Code，你会喜欢 Halo。',
+        'description': '同样的 Agent 能力，更直观的界面，加上一个 Claude Code 做不到的事：',
+        'description-highlight': '手机、iPad、任意设备远程操控你的电脑干活',
+        'download-mac-arm': 'macOS (Apple Silicon)',
+        'download-mac-intel': 'macOS (Intel)',
+        'download-win': 'Windows',
+        'all-versions': '所有版本',
+        'compare-label': '对比',
+        'compare-title': '从 Claude Code 切换',
+        'compare-subtitle': '底层能力完全相同，无需改变使用习惯',
+        'feature-agent': '完整的 Agent 能力',
+        'feature-cli': '终端 CLI 界面',
+        'feature-no-gui': '无可视化界面',
+        'feature-no-remote': '无远程访问',
+        'feature-need-node': '需要 Node.js、npm、终端',
+        'recommended': '推荐',
+        'halo-agent': '完整 Agent（同一套底层引擎）',
+        'halo-gui': '可视化 GUI，卡片式状态展示',
+        'halo-artifacts': '内置产物面板',
+        'halo-remote': '任意设备远程访问',
+        'halo-install': '一键安装，开箱即用',
+        'remote-label': '杀手级功能',
+        'remote-title': '远程控制',
+        'remote-subtitle': '你的电脑变成 7×24 待命的 AI 工作站，只需一个浏览器',
+        'scenario-train-title': '火车上',
+        'scenario-train-desc': '掏出手机，让办公室电脑跑一个数据分析脚本',
+        'scenario-meeting-title': '会议室里',
+        'scenario-meeting-desc': '用 iPad 让工位电脑改几行代码，提个 PR',
+        'scenario-home-title': '在家',
+        'scenario-home-desc': '用笔记本连到公司电脑，让 AI 处理遗留任务',
+        'how-it-works': '工作原理',
+        'step1-title': '开启远程',
+        'step1-desc': '在 Halo 中点击开启远程访问',
+        'step2-title': '扫码连接',
+        'step2-desc': '扫码或输入地址，任意浏览器打开',
+        'step3-title': '密码验证',
+        'step3-desc': '输入 6 位密码，安全连接',
+        'step4-title': '开始干活',
+        'step4-desc': '完整功能，实时同步',
+        'quickstart-label': '快速开始',
+        'quickstart-title': '30 秒上手',
+        'quickstart-subtitle': '不需要任何技术背景',
+        'quick1': '下载安装',
+        'quick1-sub': '→ 双击运行',
+        'quick2': '填入 API Key',
+        'quick2-sub': '→ 支持官方/代理地址',
+        'quick3': '开始对话',
+        'quick3-sub': '→ 直接说你要做什么',
+        'no-tech': '不需要 npm、不需要 Node.js、不需要终端、不需要配置环境变量',
+        'no-tech-strong': '普通用户一键安装，即可使用',
+        'cta-quote': '"把 Claude Code 装进口袋"',
+        'download-now': '立即下载',
+        'feedback': '反馈问题',
+        'build-time': '构建时间'
+      }
+    };
+
+    // Get browser language
+    function getBrowserLang() {
+      const lang = navigator.language || navigator.userLanguage;
+      return lang.startsWith('zh') ? 'zh' : 'en';
+    }
+
+    // Set language
+    function setLang(lang) {
+      localStorage.setItem('halo-lang', lang);
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+
+      // Update all elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[lang][key]) {
+          el.textContent = i18n[lang][key];
+        }
+      });
+
+      // Update active button
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+
+      // Update build time format
+      updateBuildTime(lang);
+    }
+
+    // Update build time with correct locale
+    function updateBuildTime(lang) {
+      const el = document.getElementById('build-time');
+      if (el && el.dataset.timestamp) {
+        const date = new Date(el.dataset.timestamp);
+        const locale = lang === 'zh' ? 'zh-CN' : 'en-US';
+        const formatted = date.toLocaleString(locale, {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'Asia/Shanghai'
+        });
+        el.textContent = i18n[lang]['build-time'] + ': ' + formatted;
+      }
+    }
+
+    // Init language
+    const savedLang = localStorage.getItem('halo-lang') || getBrowserLang();
+    setLang(savedLang);
+
+    // Language switcher events
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    });
+
+    // Fetch latest release
     async function fetchLatestRelease() {
       try {
         const response = await fetch('https://api.github.com/repos/imwangfu/halo-release/releases/latest');
@@ -752,72 +1181,60 @@
 
         const data = await response.json();
 
-        // Update version display
+        // Update version
         const versionEl = document.getElementById('current-version');
         if (versionEl && data.tag_name) {
           versionEl.textContent = data.tag_name;
         }
 
-        // Update build time
+        // Store and display build time
         const buildTimeEl = document.getElementById('build-time');
         if (buildTimeEl && data.published_at) {
-          const date = new Date(data.published_at);
-          const formatted = date.toLocaleString('zh-CN', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZone: 'Asia/Shanghai'
-          });
-          buildTimeEl.textContent = '构建时间: ' + formatted;
+          buildTimeEl.dataset.timestamp = data.published_at;
+          const currentLang = localStorage.getItem('halo-lang') || getBrowserLang();
+          updateBuildTime(currentLang);
         }
 
-        // Find download URLs from assets
+        // Find download URLs
         const assets = data.assets || [];
-        let macArm64Url = null;
-        let macX64Url = null;
-        let winUrl = null;
+        let urls = { arm64: null, x64: null, win: null };
 
         for (const asset of assets) {
           const name = asset.name.toLowerCase();
           if (name.includes('arm64') && name.endsWith('.dmg')) {
-            macArm64Url = asset.browser_download_url;
+            urls.arm64 = asset.browser_download_url;
           } else if (name.includes('x64') && name.endsWith('.dmg')) {
-            macX64Url = asset.browser_download_url;
+            urls.x64 = asset.browser_download_url;
           } else if (name.endsWith('.exe')) {
-            winUrl = asset.browser_download_url;
+            urls.win = asset.browser_download_url;
           }
         }
 
-        // Update download buttons
+        // Update buttons
         const buttons = [
-          ['mac-arm64-btn', macArm64Url],
-          ['mac-arm64-btn-2', macArm64Url],
-          ['mac-x64-btn', macX64Url],
-          ['win-btn', winUrl]
+          ['mac-arm64-btn', urls.arm64],
+          ['mac-arm64-btn-2', urls.arm64],
+          ['mac-x64-btn', urls.x64],
+          ['win-btn', urls.win]
         ];
 
         for (const [id, url] of buttons) {
           const btn = document.getElementById(id);
           if (!btn) continue;
-
           if (url) {
             btn.href = url;
           } else {
             btn.style.opacity = '0.5';
             btn.style.pointerEvents = 'none';
-            btn.title = '即将推出';
           }
         }
       } catch (e) {
         console.log('Failed to fetch release:', e);
-        // Fallback to releases page
         const fallback = 'https://github.com/imwangfu/halo-release/releases/latest';
-        document.getElementById('mac-arm64-btn').href = fallback;
-        document.getElementById('mac-arm64-btn-2').href = fallback;
-        document.getElementById('mac-x64-btn').href = fallback;
-        document.getElementById('win-btn').href = fallback;
+        ['mac-arm64-btn', 'mac-arm64-btn-2', 'mac-x64-btn', 'win-btn'].forEach(id => {
+          const btn = document.getElementById(id);
+          if (btn) btn.href = fallback;
+        });
       }
     }
 
