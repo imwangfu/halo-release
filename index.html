@@ -420,6 +420,35 @@
       color: var(--accent);
     }
 
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 1.5s forwards;
+    }
+
+    .scroll-arrow {
+      width: 24px;
+      height: 24px;
+      border-right: 2px solid var(--accent);
+      border-bottom: 2px solid var(--accent);
+      transform: rotate(45deg);
+      animation: scrollBounce 2s ease-in-out infinite;
+      opacity: 0.6;
+    }
+
+    .scroll-arrow:hover {
+      opacity: 1;
+    }
+
+    @keyframes scrollBounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.6; }
+      50% { transform: rotate(45deg) translateY(8px); opacity: 1; }
+    }
+
     /* Features */
     .features {
       padding: 120px 24px;
@@ -1052,8 +1081,8 @@
         <span class="gradient" data-i18n="hero-line2">anywhere you go</span>
       </h1>
 
-      <p class="hero-desc" data-i18n="hero-desc">
-        If you use Claude Code, you'll love Halo. Same Agent, better interface, plus <strong data-i18n="hero-highlight">remote control from any device</strong>.
+      <p class="hero-desc">
+        <span data-i18n="hero-desc">If you use Claude Code, you'll love Halo. Same Agent, better interface, plus</span> <strong data-i18n="hero-highlight">remote control from any device</strong>
       </p>
 
       <div class="btn-group">
@@ -1074,6 +1103,11 @@
       <p class="version-text">
         <span id="version">v1.0.0</span> · <span id="build-time"></span> · <a href="https://github.com/imwangfu/halo-release/releases" target="_blank" data-i18n="all-releases">All releases</a>
       </p>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator">
+      <div class="scroll-arrow"></div>
     </div>
   </section>
 
@@ -1226,7 +1260,7 @@
       </p>
 
       <div class="notice fade-in delay-5">
-        <p data-i18n="notice">Developer Preview — <a href="https://github.com/imwangfu/halo-release/issues" target="_blank" data-i18n="notice-link">Feedback welcome →</a></p>
+        <p><span data-i18n="notice">Developer Preview — </span><a href="https://github.com/imwangfu/halo-release/issues" target="_blank" data-i18n="notice-link">Stable version coming soon →</a></p>
       </div>
     </div>
   </section>
