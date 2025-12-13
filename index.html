@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Halo - 能做事的 AI 助手</title>
-  <meta name="description" content="Halo 是一个真正能帮你做事的 AI 助手。不只是聊天，它能写代码、处理文件、分析数据，让 AI 从对话走向行动。">
-  <meta name="keywords" content="AI助手, Agent, Claude, 桌面应用, 效率工具">
+  <title>Halo - 随时随地干活的 AI</title>
+  <meta name="description" content="把 Claude Code 装进口袋。同样的 Agent 能力，更直观的界面，加上远程控制——手机、iPad、任意设备操控你的电脑干活。">
+  <meta name="keywords" content="AI助手, Claude Code, Agent, 远程控制, 桌面应用">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Halo - 能做事的 AI 助手">
-  <meta property="og:description" content="不只是聊天，让 AI 真正帮你做事">
+  <meta property="og:title" content="Halo - 随时随地干活的 AI">
+  <meta property="og:description" content="把 Claude Code 装进口袋。手机、iPad 远程操控电脑干活。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://imwangfu.github.io/halo-release">
 
@@ -18,15 +18,19 @@
 
   <style>
     :root {
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #141414;
-      --bg-tertiary: #1a1a1a;
+      --bg-primary: #09090b;
+      --bg-secondary: #111113;
+      --bg-tertiary: #18181b;
+      --bg-card: #1c1c1f;
       --text-primary: #fafafa;
       --text-secondary: #a1a1aa;
       --text-muted: #71717a;
       --accent: #10b981;
       --accent-hover: #34d399;
+      --accent-dim: rgba(16, 185, 129, 0.15);
       --border: #27272a;
+      --border-light: #3f3f46;
+      --warning: #f59e0b;
     }
 
     * {
@@ -43,100 +47,108 @@
       min-height: 100vh;
     }
 
+    /* Preview Banner */
+    .preview-banner {
+      background: linear-gradient(90deg, var(--warning), #d97706);
+      color: #000;
+      text-align: center;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
     /* Hero Section */
     .hero {
-      min-height: 100vh;
+      min-height: calc(100vh - 36px);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 2rem;
+      padding: 3rem 2rem;
       position: relative;
       overflow: hidden;
     }
 
-    /* Animated background glow */
     .hero::before {
       content: '';
       position: absolute;
-      top: 50%;
+      top: 30%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, var(--accent-dim) 0%, transparent 60%);
       pointer-events: none;
-      animation: pulse 4s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
-    }
-
-    /* Logo */
-    .logo {
-      width: 120px;
-      height: 120px;
-      margin-bottom: 2rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .logo-ring {
-      width: 100%;
-      height: 100%;
-      border: 4px solid var(--accent);
-      border-radius: 50%;
-      animation: glow 2s ease-in-out infinite;
-    }
-
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
-      50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.6); }
     }
 
     .hero-content {
       position: relative;
       z-index: 1;
-      max-width: 640px;
+      max-width: 800px;
+    }
+
+    .logo-container {
+      margin-bottom: 1.5rem;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      border: 3px solid var(--accent);
+      border-radius: 50%;
+      display: inline-block;
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.5); }
     }
 
     .hero h1 {
       font-size: 3.5rem;
       font-weight: 700;
-      margin-bottom: 1rem;
-      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.03em;
     }
 
     .hero .tagline {
-      font-size: 1.5rem;
-      color: var(--text-secondary);
+      font-size: 1.75rem;
+      color: var(--accent);
       margin-bottom: 1.5rem;
+      font-weight: 500;
     }
 
-    .hero .description {
-      font-size: 1.125rem;
-      color: var(--text-muted);
-      margin-bottom: 3rem;
-      max-width: 500px;
+    .hero .subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      max-width: 600px;
       margin-left: auto;
       margin-right: auto;
     }
 
-    /* Download Buttons */
+    .hero .description {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      max-width: 550px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Download Section */
     .download-section {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1rem;
-      margin-bottom: 2rem;
+      gap: 1.25rem;
     }
 
     .download-buttons {
       display: flex;
-      gap: 1rem;
+      gap: 0.75rem;
       flex-wrap: wrap;
       justify-content: center;
     }
@@ -144,14 +156,14 @@
     .download-btn {
       display: inline-flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 1rem 2rem;
+      gap: 0.5rem;
+      padding: 0.875rem 1.5rem;
       background: var(--accent);
       color: var(--bg-primary);
       text-decoration: none;
-      border-radius: 12px;
+      border-radius: 10px;
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 0.95rem;
       transition: all 0.2s ease;
     }
 
@@ -161,8 +173,8 @@
     }
 
     .download-btn svg {
-      width: 24px;
-      height: 24px;
+      width: 20px;
+      height: 20px;
     }
 
     .download-btn.secondary {
@@ -172,13 +184,17 @@
     }
 
     .download-btn.secondary:hover {
-      background: var(--bg-secondary);
+      background: var(--bg-card);
       border-color: var(--accent);
     }
 
     .version-info {
-      font-size: 0.875rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
     }
 
     .version-info a {
@@ -190,94 +206,276 @@
       color: var(--accent);
     }
 
-    /* Features Section */
-    .features {
-      padding: 6rem 2rem;
+    .build-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* For Claude Code Users */
+    .claude-code-section {
+      padding: 4rem 2rem;
       background: var(--bg-secondary);
     }
 
-    .features-container {
-      max-width: 1000px;
+    .section-container {
+      max-width: 900px;
       margin: 0 auto;
     }
 
-    .features h2 {
+    .section-title {
+      font-size: 1.75rem;
       text-align: center;
-      font-size: 2rem;
-      margin-bottom: 3rem;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-    }
-
-    .feature-card {
-      background: var(--bg-tertiary);
-      padding: 2rem;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      transition: border-color 0.2s ease;
-    }
-
-    .feature-card:hover {
-      border-color: var(--accent);
-    }
-
-    .feature-card .icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .feature-card h3 {
-      font-size: 1.25rem;
       margin-bottom: 0.5rem;
     }
 
-    .feature-card p {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-    }
-
-    /* Philosophy Section */
-    .philosophy {
-      padding: 6rem 2rem;
+    .section-subtitle {
       text-align: center;
+      color: var(--text-secondary);
+      margin-bottom: 2.5rem;
+      font-size: 1rem;
     }
 
-    .philosophy-container {
-      max-width: 700px;
+    /* Comparison Table */
+    .comparison-table {
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .comparison-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 1rem 1.25rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .comparison-table th {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .comparison-table th:first-child {
+      width: 40%;
+    }
+
+    .comparison-table td {
+      color: var(--text-secondary);
+    }
+
+    .comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .comparison-table .feature-name {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .check {
+      color: var(--accent);
+    }
+
+    .cross {
+      color: var(--text-muted);
+    }
+
+    .highlight-cell {
+      background: var(--accent-dim);
+      color: var(--accent) !important;
+      font-weight: 500;
+    }
+
+    /* Killer Feature */
+    .killer-feature {
+      padding: 5rem 2rem;
+      background: var(--bg-primary);
+    }
+
+    .killer-feature .section-title {
+      margin-bottom: 1rem;
+    }
+
+    .killer-feature .section-title span {
+      color: var(--accent);
+    }
+
+    .scenarios {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 3rem;
+    }
+
+    .scenario-card {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .scenario-card .emoji {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .scenario-card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .scenario-card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    /* How it works */
+    .how-it-works {
+      background: var(--bg-tertiary);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid var(--border);
+    }
+
+    .how-it-works h3 {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+    }
+
+    .steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .step {
+      flex: 1;
+      min-width: 180px;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      color: var(--bg-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .step-content h4 {
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .step-content p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Quick Start */
+    .quick-start {
+      padding: 4rem 2rem;
+      background: var(--bg-secondary);
+    }
+
+    .quick-start-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 500px;
       margin: 0 auto;
     }
 
-    .philosophy blockquote {
-      font-size: 1.5rem;
-      color: var(--text-secondary);
-      font-style: italic;
-      margin-bottom: 1rem;
-      line-height: 1.8;
+    .quick-step {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg-card);
+      padding: 1.25rem 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
     }
 
-    .philosophy .author {
+    .quick-step .number {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .quick-step .text {
+      color: var(--text-primary);
+    }
+
+    .quick-step .text span {
       color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .no-tech {
+      text-align: center;
+      margin-top: 2rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* CTA Quote */
+    .cta-quote {
+      padding: 4rem 2rem;
+      text-align: center;
+      background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    }
+
+    .cta-quote blockquote {
+      font-size: 1.5rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+
+    .cta-quote blockquote span {
+      color: var(--accent);
     }
 
     /* Footer */
     footer {
-      padding: 3rem 2rem;
+      padding: 2rem;
       text-align: center;
       border-top: 1px solid var(--border);
     }
 
     footer p {
       color: var(--text-muted);
-      font-size: 0.875rem;
+      font-size: 0.85rem;
     }
 
     footer a {
       color: var(--text-secondary);
       text-decoration: none;
+      margin: 0 0.5rem;
     }
 
     footer a:hover {
@@ -285,40 +483,75 @@
     }
 
     /* Responsive */
-    @media (max-width: 640px) {
+    @media (max-width: 768px) {
       .hero h1 {
         font-size: 2.5rem;
       }
 
       .hero .tagline {
-        font-size: 1.25rem;
+        font-size: 1.35rem;
       }
 
+      .hero .subtitle {
+        font-size: 1.1rem;
+      }
+
+      .comparison-table {
+        font-size: 0.9rem;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 0.75rem;
+      }
+
+      .steps {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 480px) {
       .download-buttons {
         flex-direction: column;
         width: 100%;
-        max-width: 300px;
       }
 
       .download-btn {
         width: 100%;
         justify-content: center;
       }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .section-title {
+        font-size: 1.4rem;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Preview Banner -->
+  <div class="preview-banner">
+    🚧 开发者预览版 · 可能存在 Bug，欢迎反馈
+  </div>
+
   <!-- Hero Section -->
   <section class="hero">
-    <div class="logo">
-      <div class="logo-ring"></div>
-    </div>
-
     <div class="hero-content">
+      <div class="logo-container">
+        <div class="logo"></div>
+      </div>
+
       <h1>Halo</h1>
-      <p class="tagline">能做事的 AI 助手</p>
+      <p class="tagline">随时随地干活的 AI</p>
+      <p class="subtitle">
+        如果你在用 Claude Code，你会喜欢 Halo。
+      </p>
       <p class="description">
-        不只是聊天。写代码、处理文件、分析数据——让 AI 从对话走向行动。
+        同样的 Agent 能力，更直观的界面，加上一个 Claude Code 做不到的事：<br>
+        <strong style="color: var(--text-primary);">手机、iPad、任意设备远程操控你的电脑干活</strong>——全程自然语言。
       </p>
 
       <div class="download-section">
@@ -331,73 +564,172 @@
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
             macOS (Intel)
           </a>
-        </div>
-        <div class="download-buttons">
           <a href="#" class="download-btn secondary" id="win-btn">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.75l6-1.32v6.48L3 12m17-9v8.75l-10 .15V5.21L20 3M3 13l6 .09v6.81l-6-1.15V13m17 .25V22l-10-1.91V13.1l10 .15z"/></svg>
             Windows
           </a>
         </div>
-        <p class="version-info">
-          <span id="current-version">v1.0.0</span> ·
-          <a href="https://github.com/imwangfu/halo-release/releases" target="_blank">所有版本</a>
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section class="features">
-    <div class="features-container">
-      <h2>为什么选择 Halo？</h2>
-
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="icon">🚀</div>
-          <h3>真正的 Agent 能力</h3>
-          <p>不只是调用 API 聊天，而是完整的 Agent Loop。AI 可以思考、行动、观察、再行动，直到任务完成。</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="icon">🔑</div>
-          <h3>使用你自己的 API Key</h3>
-          <p>直连 Claude API，无中间商。数据直达，隐私安全，成本透明。</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="icon">💻</div>
-          <h3>原生桌面体验</h3>
-          <p>不是网页套壳，而是真正的桌面应用。原生性能，离线可用，系统深度集成。</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="icon">📂</div>
-          <h3>空间隔离</h3>
-          <p>每个项目一个独立空间，文件、对话、上下文完全隔离，互不干扰。</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="icon">🎨</div>
-          <h3>为普通用户设计</h3>
-          <p>不是程序员工具，是人人可用的 AI 助手。简洁直观，无需学习。</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="icon">🔄</div>
-          <h3>自动更新</h3>
-          <p>后台静默检查更新，一键升级。始终使用最新版本，体验最新功能。</p>
+        <div class="version-info">
+          <div>
+            <span id="current-version">v1.0.0</span> ·
+            <a href="https://github.com/imwangfu/halo-release/releases" target="_blank">所有版本</a>
+          </div>
+          <div class="build-time" id="build-time"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Philosophy Section -->
-  <section class="philosophy">
-    <div class="philosophy-container">
-      <blockquote>
-        "就像 Windows 把 DOS 的命令行变成了桌面，<br>
-        Halo 要把 AI 从终端带到每个人的桌面上。"
-      </blockquote>
+  <!-- For Claude Code Users -->
+  <section class="claude-code-section">
+    <div class="section-container">
+      <h2 class="section-title">从 Claude Code 切换到 Halo</h2>
+      <p class="section-subtitle">你不需要改变任何使用习惯，底层是同一套能力</p>
+
+      <div class="comparison-table">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Claude Code</th>
+              <th>Halo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feature-name">Agent 能力</td>
+              <td><span class="check">✓</span> 完整</td>
+              <td><span class="check">✓</span> 完整 (同一套底层)</td>
+            </tr>
+            <tr>
+              <td class="feature-name">界面</td>
+              <td>终端 CLI</td>
+              <td>可视化 GUI</td>
+            </tr>
+            <tr>
+              <td class="feature-name">工具调用</td>
+              <td>文字滚动</td>
+              <td>卡片式状态展示</td>
+            </tr>
+            <tr>
+              <td class="feature-name">产物管理</td>
+              <td>ls 自己找</td>
+              <td>右侧产物栏，一目了然</td>
+            </tr>
+            <tr>
+              <td class="feature-name">远程访问</td>
+              <td><span class="cross">✗</span></td>
+              <td class="highlight-cell"><span class="check">✓</span> 手机/Pad/任意浏览器</td>
+            </tr>
+            <tr>
+              <td class="feature-name">安装门槛</td>
+              <td>需要 Node.js、npm、终端</td>
+              <td>双击安装，开箱即用</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Killer Feature: Remote Control -->
+  <section class="killer-feature">
+    <div class="section-container">
+      <h2 class="section-title">杀手级功能：<span>远程控制</span></h2>
+      <p class="section-subtitle">你的电脑变成 7×24 待命的 AI 工作站，而你只需要一个浏览器</p>
+
+      <div class="scenarios">
+        <div class="scenario-card">
+          <div class="emoji">🚄</div>
+          <h3>火车上</h3>
+          <p>掏出手机，让办公室电脑跑一个数据分析脚本</p>
+        </div>
+        <div class="scenario-card">
+          <div class="emoji">🏢</div>
+          <h3>会议室里</h3>
+          <p>用 iPad 让工位电脑改几行代码，提个 PR</p>
+        </div>
+        <div class="scenario-card">
+          <div class="emoji">🏠</div>
+          <h3>在家</h3>
+          <p>用笔记本连到公司电脑，让 AI 处理遗留任务</p>
+        </div>
+      </div>
+
+      <div class="how-it-works">
+        <h3>工作原理</h3>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>开启远程</h4>
+              <p>电脑上运行 Halo，点击开启远程访问</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>扫码连接</h4>
+              <p>扫码或输入地址，任意设备浏览器打开</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>密码验证</h4>
+              <p>6 位密码验证，安全连接</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h4>开始干活</h4>
+              <p>完整功能，实时同步</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start -->
+  <section class="quick-start">
+    <div class="section-container">
+      <h2 class="section-title">30 秒上手</h2>
+      <p class="section-subtitle">不需要任何技术背景</p>
+
+      <div class="quick-start-steps">
+        <div class="quick-step">
+          <div class="number">1</div>
+          <div class="text">下载安装 <span>→ 双击运行</span></div>
+        </div>
+        <div class="quick-step">
+          <div class="number">2</div>
+          <div class="text">填入 API Key <span>→ 支持官方/代理地址</span></div>
+        </div>
+        <div class="quick-step">
+          <div class="number">3</div>
+          <div class="text">开始对话 <span>→ 直接说你要做什么</span></div>
+        </div>
+      </div>
+
+      <p class="no-tech">
+        不需要 npm、不需要 Node.js、不需要终端、不需要配置环境变量<br>
+        <strong>普通用户一键安装，即可使用</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- CTA Quote -->
+  <section class="cta-quote">
+    <blockquote>
+      "<span>把 Claude Code 装进口袋</span>"
+    </blockquote>
+    <div class="download-buttons">
+      <a href="#" class="download-btn" id="mac-arm64-btn-2">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        立即下载
+      </a>
     </div>
   </section>
 
@@ -406,7 +738,8 @@
     <p>
       Made with ❤️ ·
       <a href="https://github.com/imwangfu/halo-release" target="_blank">GitHub</a> ·
-      <a href="https://github.com/imwangfu/halo-release/releases" target="_blank">Releases</a>
+      <a href="https://github.com/imwangfu/halo-release/releases" target="_blank">Releases</a> ·
+      <a href="https://github.com/imwangfu/halo-release/issues" target="_blank">反馈问题</a>
     </p>
   </footer>
 
@@ -423,6 +756,21 @@
         const versionEl = document.getElementById('current-version');
         if (versionEl && data.tag_name) {
           versionEl.textContent = data.tag_name;
+        }
+
+        // Update build time
+        const buildTimeEl = document.getElementById('build-time');
+        if (buildTimeEl && data.published_at) {
+          const date = new Date(data.published_at);
+          const formatted = date.toLocaleString('zh-CN', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: 'Asia/Shanghai'
+          });
+          buildTimeEl.textContent = '构建时间: ' + formatted;
         }
 
         // Find download URLs from assets
@@ -443,32 +791,33 @@
         }
 
         // Update download buttons
-        if (macArm64Url) {
-          document.getElementById('mac-arm64-btn').href = macArm64Url;
-        }
-        if (macX64Url) {
-          document.getElementById('mac-x64-btn').href = macX64Url;
-        } else {
-          // If no x64, hide the button or show "coming soon"
-          const btn = document.getElementById('mac-x64-btn');
-          btn.style.opacity = '0.5';
-          btn.style.pointerEvents = 'none';
-          btn.title = '即将推出';
-        }
-        if (winUrl) {
-          document.getElementById('win-btn').href = winUrl;
-        } else {
-          const btn = document.getElementById('win-btn');
-          btn.style.opacity = '0.5';
-          btn.style.pointerEvents = 'none';
-          btn.title = '即将推出';
+        const buttons = [
+          ['mac-arm64-btn', macArm64Url],
+          ['mac-arm64-btn-2', macArm64Url],
+          ['mac-x64-btn', macX64Url],
+          ['win-btn', winUrl]
+        ];
+
+        for (const [id, url] of buttons) {
+          const btn = document.getElementById(id);
+          if (!btn) continue;
+
+          if (url) {
+            btn.href = url;
+          } else {
+            btn.style.opacity = '0.5';
+            btn.style.pointerEvents = 'none';
+            btn.title = '即将推出';
+          }
         }
       } catch (e) {
         console.log('Failed to fetch release:', e);
         // Fallback to releases page
-        document.getElementById('mac-arm64-btn').href = 'https://github.com/imwangfu/halo-release/releases/latest';
-        document.getElementById('mac-x64-btn').href = 'https://github.com/imwangfu/halo-release/releases/latest';
-        document.getElementById('win-btn').href = 'https://github.com/imwangfu/halo-release/releases/latest';
+        const fallback = 'https://github.com/imwangfu/halo-release/releases/latest';
+        document.getElementById('mac-arm64-btn').href = fallback;
+        document.getElementById('mac-arm64-btn-2').href = fallback;
+        document.getElementById('mac-x64-btn').href = fallback;
+        document.getElementById('win-btn').href = fallback;
       }
     }
 
