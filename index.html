@@ -323,17 +323,17 @@
 
       <div class="download-section">
         <div class="download-buttons">
-          <a href="https://github.com/imwangfu/halo-release/releases/latest/download/Halo-mac-arm64.dmg" class="download-btn" id="mac-arm64-btn">
+          <a href="#" class="download-btn" id="mac-arm64-btn">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
             macOS (Apple Silicon)
           </a>
-          <a href="https://github.com/imwangfu/halo-release/releases/latest/download/Halo-mac-x64.dmg" class="download-btn secondary">
+          <a href="#" class="download-btn secondary" id="mac-x64-btn">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
             macOS (Intel)
           </a>
         </div>
         <div class="download-buttons">
-          <a href="https://github.com/imwangfu/halo-release/releases/latest/download/Halo-win-x64.exe" class="download-btn secondary">
+          <a href="#" class="download-btn secondary" id="win-btn">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.75l6-1.32v6.48L3 12m17-9v8.75l-10 .15V5.21L20 3M3 13l6 .09v6.81l-6-1.15V13m17 .25V22l-10-1.91V13.1l10 .15z"/></svg>
             Windows
           </a>
@@ -411,43 +411,68 @@
   </footer>
 
   <script>
-    // Fetch latest version from GitHub API
-    async function fetchLatestVersion() {
+    // Fetch latest release and update download links
+    async function fetchLatestRelease() {
       try {
         const response = await fetch('https://api.github.com/repos/imwangfu/halo-release/releases/latest');
-        if (response.ok) {
-          const data = await response.json();
-          const versionEl = document.getElementById('current-version');
-          if (versionEl && data.tag_name) {
-            versionEl.textContent = data.tag_name;
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        // Update version display
+        const versionEl = document.getElementById('current-version');
+        if (versionEl && data.tag_name) {
+          versionEl.textContent = data.tag_name;
+        }
+
+        // Find download URLs from assets
+        const assets = data.assets || [];
+        let macArm64Url = null;
+        let macX64Url = null;
+        let winUrl = null;
+
+        for (const asset of assets) {
+          const name = asset.name.toLowerCase();
+          if (name.includes('arm64') && name.endsWith('.dmg')) {
+            macArm64Url = asset.browser_download_url;
+          } else if (name.includes('x64') && name.endsWith('.dmg')) {
+            macX64Url = asset.browser_download_url;
+          } else if (name.endsWith('.exe')) {
+            winUrl = asset.browser_download_url;
           }
         }
+
+        // Update download buttons
+        if (macArm64Url) {
+          document.getElementById('mac-arm64-btn').href = macArm64Url;
+        }
+        if (macX64Url) {
+          document.getElementById('mac-x64-btn').href = macX64Url;
+        } else {
+          // If no x64, hide the button or show "coming soon"
+          const btn = document.getElementById('mac-x64-btn');
+          btn.style.opacity = '0.5';
+          btn.style.pointerEvents = 'none';
+          btn.title = '即将推出';
+        }
+        if (winUrl) {
+          document.getElementById('win-btn').href = winUrl;
+        } else {
+          const btn = document.getElementById('win-btn');
+          btn.style.opacity = '0.5';
+          btn.style.pointerEvents = 'none';
+          btn.title = '即将推出';
+        }
       } catch (e) {
-        console.log('Failed to fetch version:', e);
+        console.log('Failed to fetch release:', e);
+        // Fallback to releases page
+        document.getElementById('mac-arm64-btn').href = 'https://github.com/imwangfu/halo-release/releases/latest';
+        document.getElementById('mac-x64-btn').href = 'https://github.com/imwangfu/halo-release/releases/latest';
+        document.getElementById('win-btn').href = 'https://github.com/imwangfu/halo-release/releases/latest';
       }
     }
 
-    fetchLatestVersion();
-
-    // Detect platform and highlight appropriate download button
-    function detectPlatform() {
-      const ua = navigator.userAgent.toLowerCase();
-      const platform = navigator.platform.toLowerCase();
-
-      if (platform.includes('mac') || ua.includes('mac')) {
-        // Check for Apple Silicon
-        // Note: This is a best-effort detection
-        const isAppleSilicon =
-          (navigator.userAgent.includes('Mac') &&
-           typeof navigator.hardwareConcurrency !== 'undefined' &&
-           navigator.hardwareConcurrency >= 8);
-
-        // Highlight the appropriate Mac button
-        // For simplicity, we'll highlight Apple Silicon as primary on Mac
-      }
-    }
-
-    detectPlatform();
+    fetchLatestRelease();
   </script>
 </body>
 </html>
