@@ -795,7 +795,7 @@
       </div>
 
       <p class="version-text">
-        <span id="version">v1.0.0</span> · <span id="build-time"></span> · <a href="https://github.com/AtelierHalo/halo/releases" target="_blank" data-i18n="all-releases">All releases</a>
+        <span id="version">v1.0.0</span> · <span id="build-time"></span> · <a href="https://github.com/imwangfu/halo-release/releases" target="_blank" data-i18n="all-releases">All releases</a>
       </p>
     </div>
   </section>
@@ -949,7 +949,7 @@
       </p>
 
       <div class="notice">
-        <p data-i18n="notice">Developer Preview — May contain bugs. <a href="https://github.com/AtelierHalo/halo/issues" target="_blank" data-i18n="notice-link">Report issues →</a></p>
+        <p data-i18n="notice">Developer Preview — May contain bugs. <a href="https://github.com/imwangfu/halo-release/issues" target="_blank" data-i18n="notice-link">Report issues →</a></p>
       </div>
     </div>
   </section>
@@ -972,9 +972,9 @@
   <footer>
     <p>
       Made with ❤️ ·
-      <a href="https://github.com/AtelierHalo/halo">GitHub</a> ·
-      <a href="https://github.com/AtelierHalo/halo/releases">Releases</a> ·
-      <a href="https://github.com/AtelierHalo/halo/issues" data-i18n="feedback">Feedback</a>
+      <a href="https://github.com/imwangfu/halo-release">GitHub</a> ·
+      <a href="https://github.com/imwangfu/halo-release/releases">Releases</a> ·
+      <a href="https://github.com/imwangfu/halo-release/issues" data-i18n="feedback">Feedback</a>
     </p>
   </footer>
 
@@ -1031,8 +1031,8 @@
         'q3-sub': '→ just say what you need',
         'qs-note': 'No npm, no Node.js, no terminal, no environment variables',
         'qs-strong': 'One-click install for everyone',
-        'notice': 'Developer Preview — May contain bugs.',
-        'notice-link': 'Report issues →',
+        'notice': 'Developer Preview — ',
+        'notice-link': 'Feedback welcome →',
         'cta': '"Put Claude Code in your pocket"',
         'download-now': 'Download Now',
         'feedback': 'Feedback',
@@ -1089,8 +1089,8 @@
         'q3-sub': '→ 直接说你要做什么',
         'qs-note': '不需要 npm、Node.js、终端、环境变量',
         'qs-strong': '普通用户一键安装，即可使用',
-        'notice': '开发者预览版 · 可能存在 Bug',
-        'notice-link': '反馈问题 →',
+        'notice': '开发者预览版 · ',
+        'notice-link': '欢迎反馈 Bug →',
         'cta': '"把 Claude Code 装进口袋"',
         'download-now': '立即下载',
         'feedback': '反馈问题',
@@ -1135,7 +1135,7 @@
     });
 
     // Fetch release
-    fetch('https://api.github.com/repos/AtelierHalo/halo/releases/latest')
+    fetch('https://api.github.com/repos/imwangfu/halo-release/releases/latest')
       .then(r => r.json())
       .then(data => {
         if (data.tag_name) {
@@ -1163,7 +1163,7 @@
         });
       })
       .catch(() => {
-        const fb = 'https://github.com/AtelierHalo/halo/releases/latest';
+        const fb = 'https://github.com/imwangfu/halo-release/releases/latest';
         ['mac-arm64-btn', 'mac-arm64-btn-2', 'mac-x64-btn', 'win-btn'].forEach(id => {
           const btn = document.getElementById(id);
           if (btn) btn.href = fb;
