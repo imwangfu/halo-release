@@ -979,8 +979,88 @@
       color: var(--accent);
     }
 
-    footer a:hover::after {
+    .notice a:hover::after {
       width: 100%;
+    }
+
+    /* ARM Mac Notice */
+    .arm-notice {
+      max-width: 500px;
+      margin: 32px auto 0;
+      padding: 24px;
+      background: var(--bg-muted);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius);
+      text-align: left;
+    }
+
+    .arm-notice-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .arm-notice-icon {
+      font-size: 24px;
+    }
+
+    .arm-notice-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .arm-notice-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .arm-notice-code {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 12px;
+    }
+
+    .arm-notice-code code {
+      flex: 1;
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+      font-size: 13px;
+      color: var(--accent-light);
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      background: var(--accent);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent-light);
+    }
+
+    .copy-btn.copied {
+      background: #22c55e;
+    }
+
+    .arm-notice-tip {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 0;
     }
 
     /* Responsive */
@@ -1259,6 +1339,20 @@
         <strong data-i18n="qs-strong">One-click install for everyone</strong>
       </p>
 
+      <!-- ARM Mac Notice -->
+      <div class="arm-notice fade-in delay-4" id="arm-notice" style="display: none;">
+        <div class="arm-notice-header">
+          <span class="arm-notice-icon">🍎</span>
+          <span class="arm-notice-title" data-i18n="arm-title">Apple Silicon (M1/M2/M3/M4) 首次使用</span>
+        </div>
+        <p class="arm-notice-desc" data-i18n="arm-desc">如果看到"应用已损坏"提示，请打开终端运行以下命令：</p>
+        <div class="arm-notice-code">
+          <code id="xattr-command">xattr -cr /Applications/Halo.app</code>
+          <button class="copy-btn" id="copy-xattr-btn" data-i18n="copy">复制</button>
+        </div>
+        <p class="arm-notice-tip" data-i18n="arm-tip">只需运行一次，之后即可正常使用</p>
+      </div>
+
       <div class="notice fade-in delay-5">
         <p><span data-i18n="notice">Developer Preview — </span><a href="https://github.com/imwangfu/halo-release/issues" target="_blank" data-i18n="notice-link">Stable version coming soon →</a></p>
       </div>
@@ -1347,7 +1441,12 @@
         'cta': '"Put Claude Code in your pocket"',
         'download-now': 'Download Now',
         'feedback': 'Feedback',
-        'build': 'Built'
+        'build': 'Built',
+        'arm-title': 'Apple Silicon (M1/M2/M3/M4) First Launch',
+        'arm-desc': 'If you see "App is damaged" message, open Terminal and run:',
+        'arm-tip': 'Only need to run once, then it works normally',
+        'copy': 'Copy',
+        'copied': 'Copied!'
       },
       zh: {
         'badge': '开发者预览版',
@@ -1405,7 +1504,12 @@
         'cta': '"把 Claude Code 装进口袋"',
         'download-now': '立即下载',
         'feedback': '反馈问题',
-        'build': '构建于'
+        'build': '构建于',
+        'arm-title': 'Apple Silicon (M1/M2/M3/M4) 首次使用',
+        'arm-desc': '如果看到"应用已损坏"提示，请打开终端运行以下命令：',
+        'arm-tip': '只需运行一次，之后即可正常使用',
+        'copy': '复制',
+        'copied': '已复制!'
       }
     };
 
@@ -1499,6 +1603,50 @@
           if (btn) btn.href = fb;
         });
       });
+
+    // Show ARM Mac notice for Mac users
+    const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform) ||
+                  (navigator.userAgent.includes('Mac') && 'ontouchend' in document === false);
+    if (isMac) {
+      const armNotice = document.getElementById('arm-notice');
+      if (armNotice) {
+        armNotice.style.display = 'block';
+      }
+    }
+
+    // Copy button functionality
+    const copyBtn = document.getElementById('copy-xattr-btn');
+    const xattrCommand = document.getElementById('xattr-command');
+    if (copyBtn && xattrCommand) {
+      copyBtn.addEventListener('click', async () => {
+        const text = xattrCommand.textContent;
+        try {
+          await navigator.clipboard.writeText(text);
+          const lang = localStorage.getItem('halo-lang') || getBrowserLang();
+          copyBtn.textContent = i18n[lang]['copied'];
+          copyBtn.classList.add('copied');
+          setTimeout(() => {
+            copyBtn.textContent = i18n[lang]['copy'];
+            copyBtn.classList.remove('copied');
+          }, 2000);
+        } catch (err) {
+          // Fallback for older browsers
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          const lang = localStorage.getItem('halo-lang') || getBrowserLang();
+          copyBtn.textContent = i18n[lang]['copied'];
+          copyBtn.classList.add('copied');
+          setTimeout(() => {
+            copyBtn.textContent = i18n[lang]['copy'];
+            copyBtn.classList.remove('copied');
+          }, 2000);
+        }
+      });
+    }
   </script>
 </body>
 </html>
